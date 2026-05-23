@@ -15,17 +15,34 @@ export const mockLearningCases: LearningCase[] = [
       "Defined camera lens intent and visual hierarchy for jury readability."
     ],
     preset: {
-      sceneType: "exterior",
-      buildingType: "museum",
-      materials: {
+      projectContext: {
+        projectName: "Harbor Light Museum",
+        location: "Qingdao Waterfront District",
+        designConcept: "A luminous cultural lantern connecting city promenade and sea horizon.",
+        buildingFunction: "museum"
+      },
+      spatialScene: {
+        sceneType: "exterior",
+        foreground: "Visitors walking on wet granite promenade with soft reflections",
+        middleGround: "Main museum volume with titanium facade and transparent ground floor",
+        background: "Harbor waterline, low skyline silhouette, and dusk cloud layers"
+      },
+      materialDetail: {
         facade: "brushed titanium panels",
         ground: "wet granite pavers",
         roof: "standing seam zinc roof",
-        landscape: "coastal grasses and low shrubs"
+        landscape: "coastal grasses and low shrubs",
+        lightingDetail: "warm interior glow with cool ambient dusk fill"
       },
-      atmosphere: "dusk",
+      visualStyle: "competition board",
       cameraComposition: "wide angle",
-      outputStyle: "competition board"
+      negativePrompts: [
+        "avoid distorted geometry",
+        "avoid messy people",
+        "avoid overexposed image",
+        "avoid unreadable facade",
+        "avoid random objects"
+      ]
     }
   },
   {
@@ -42,17 +59,33 @@ export const mockLearningCases: LearningCase[] = [
       "Improved street-level readability and accessibility cues."
     ],
     preset: {
-      sceneType: "street view",
-      buildingType: "community center",
-      materials: {
+      projectContext: {
+        projectName: "Lotus Block Community Hub",
+        location: "Shanghai Inner Ring Neighborhood",
+        designConcept: "Porous civic ground floor that blends daily life, learning, and social wellness.",
+        buildingFunction: "community center"
+      },
+      spatialScene: {
+        sceneType: "street",
+        foreground: "Families and elderly users crossing a permeable stone plaza",
+        middleGround: "Community center facade with timber screens and transparent lobby",
+        background: "Tree canopy, neighborhood streetscape, and mixed-use blocks"
+      },
+      materialDetail: {
         facade: "timber slats with light brick",
         ground: "permeable stone paving",
         roof: "green roof tray system",
-        landscape: "canopy trees and rain garden"
+        landscape: "canopy trees and rain garden",
+        lightingDetail: "neutral daylight with soft shadow transitions under canopies"
       },
-      atmosphere: "daylight",
-      cameraComposition: "documentary style",
-      outputStyle: "realistic render"
+      visualStyle: "realistic render",
+      cameraComposition: "documentary composition",
+      negativePrompts: [
+        "avoid distorted geometry",
+        "avoid messy people",
+        "avoid unreadable facade",
+        "avoid random objects"
+      ]
     }
   },
   {
@@ -69,17 +102,33 @@ export const mockLearningCases: LearningCase[] = [
       "Aligned render tone with early-stage design communication."
     ],
     preset: {
-      sceneType: "aerial view",
-      buildingType: "residential",
-      materials: {
+      projectContext: {
+        projectName: "Pine Court Residences",
+        location: "Hangzhou Forest Fringe",
+        designConcept: "Layered housing bars that preserve tree corridors and shared courtyards.",
+        buildingFunction: "residential"
+      },
+      spatialScene: {
+        sceneType: "aerial",
+        foreground: "Tree canopy edges framing the residential blocks",
+        middleGround: "Clustered courtyard buildings with stepped terraces",
+        background: "Forest belt fading into distant foothills"
+      },
+      materialDetail: {
         facade: "pale concrete with vertical timber fins",
         ground: "compacted gravel and boardwalk",
         roof: "matte dark metal roof",
-        landscape: "moss, pines, and meadow planting"
+        landscape: "moss, pines, and meadow planting",
+        lightingDetail: "soft overcast light with low-contrast shadows"
       },
-      atmosphere: "soft Nordic",
+      visualStyle: "Nordic soft tone",
       cameraComposition: "axonometric",
-      outputStyle: "concept render"
+      negativePrompts: [
+        "avoid distorted geometry",
+        "avoid overexposed image",
+        "avoid unreadable facade",
+        "avoid random objects"
+      ]
     }
   },
   {
@@ -96,17 +145,34 @@ export const mockLearningCases: LearningCase[] = [
       "Used composition rules to retain legibility in dense scenes."
     ],
     preset: {
-      sceneType: "exterior",
-      buildingType: "commercial",
-      materials: {
+      projectContext: {
+        projectName: "Metro Gate Exchange",
+        location: "Shenzhen Transit Core",
+        designConcept: "A porous retail podium connecting metro flow with public streets.",
+        buildingFunction: "commercial"
+      },
+      spatialScene: {
+        sceneType: "exterior",
+        foreground: "Reflective wet pavement with directional wayfinding strips",
+        middleGround: "Transparent commercial podium with layered retail frontage",
+        background: "Transit viaduct and dense urban skyline"
+      },
+      materialDetail: {
         facade: "low-iron glass and anodized aluminum",
         ground: "basalt paving with tactile strips",
         roof: "mechanical screen with dark metal cap",
-        landscape: "planter bands with hardy shrubs"
+        landscape: "planter bands with hardy shrubs",
+        lightingDetail: "cinematic rainy reflections with highlighted storefront edges"
       },
-      atmosphere: "rainy day",
-      cameraComposition: "symmetrical",
-      outputStyle: "realistic render"
+      visualStyle: "cinematic atmosphere",
+      cameraComposition: "symmetrical composition",
+      negativePrompts: [
+        "avoid distorted geometry",
+        "avoid messy people",
+        "avoid overexposed image",
+        "avoid unreadable facade",
+        "avoid random objects"
+      ]
     }
   },
   {
@@ -123,17 +189,33 @@ export const mockLearningCases: LearningCase[] = [
       "Prepared output for annotation-heavy design review."
     ],
     preset: {
-      sceneType: "section perspective",
-      buildingType: "school",
-      materials: {
+      projectContext: {
+        projectName: "Courtyard Arts School",
+        location: "Kyoto Cultural Quarter",
+        designConcept: "Quiet courtyard-centered learning spaces with layered thresholds.",
+        buildingFunction: "school"
+      },
+      spatialScene: {
+        sceneType: "section perspective",
+        foreground: "Timber threshold details and student seating edge",
+        middleGround: "Layered classroom volumes around raked courtyard",
+        background: "Bamboo garden screen and sky aperture above eaves"
+      },
+      materialDetail: {
         facade: "off-white plaster with charred timber accents",
         ground: "raked gravel with stepping stones",
         roof: "deep eaves with dark ceramic tiles",
-        landscape: "bamboo and low moss beds"
+        landscape: "bamboo and low moss beds",
+        lightingDetail: "soft ambient light with crisp highlights on joinery edges"
       },
-      atmosphere: "Japanese minimal",
-      cameraComposition: "close-up",
-      outputStyle: "diagrammatic render"
+      visualStyle: "diagrammatic architecture visualization",
+      cameraComposition: "eye-level",
+      negativePrompts: [
+        "avoid distorted geometry",
+        "avoid messy people",
+        "avoid unreadable facade",
+        "avoid random objects"
+      ]
     }
   }
 ];

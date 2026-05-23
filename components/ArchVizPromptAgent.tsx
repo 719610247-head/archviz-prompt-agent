@@ -14,17 +14,34 @@ interface ArchVizPromptAgentProps {
 }
 
 const FALLBACK_SELECTIONS: PromptSelections = {
-  sceneType: "exterior",
-  buildingType: "museum",
-  materials: {
-    facade: "textured concrete",
-    ground: "stone paving",
-    roof: "metal roof",
-    landscape: "native planting"
+  projectContext: {
+    projectName: "Demo Architecture Project",
+    location: "Shanghai, China",
+    designConcept: "A civic building that bridges public activity, landscape, and daylight.",
+    buildingFunction: "museum"
   },
-  atmosphere: "daylight",
+  spatialScene: {
+    sceneType: "exterior",
+    foreground: "Pedestrians and textured paving at human scale",
+    middleGround: "Main building volume with clear entrance",
+    background: "Urban skyline and soft atmospheric depth"
+  },
+  materialDetail: {
+    facade: "textured concrete and glass",
+    ground: "stone paving",
+    roof: "standing seam metal roof",
+    landscape: "native planting and low shrubs",
+    lightingDetail: "balanced daylight with controlled highlights"
+  },
+  visualStyle: "realistic render",
   cameraComposition: "eye-level",
-  outputStyle: "realistic render"
+  negativePrompts: [
+    "avoid distorted geometry",
+    "avoid messy people",
+    "avoid overexposed image",
+    "avoid unreadable facade",
+    "avoid random objects"
+  ]
 };
 
 export function ArchVizPromptAgent({
@@ -87,10 +104,7 @@ export function ArchVizPromptAgent({
       </section>
 
       <aside className="panel panel-right">
-        <StyleReferencePanel
-          activeCase={activeCase}
-          styleReferences={styleReferences}
-        />
+        <StyleReferencePanel activeCase={activeCase} styleReferences={styleReferences} />
       </aside>
     </main>
   );

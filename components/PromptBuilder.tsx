@@ -1,9 +1,10 @@
 ﻿import {
-  ATMOSPHERES,
-  BUILDING_TYPES,
+  BUILDING_FUNCTIONS,
   CAMERA_COMPOSITIONS,
-  OUTPUT_STYLES,
+  NEGATIVE_PROMPT_OPTIONS,
   SCENE_TYPES,
+  VISUAL_STYLES,
+  type NegativePromptOption,
   type PromptSelections
 } from "@/types/archviz";
 import { ModuleSelect } from "@/components/ModuleSelect";
@@ -21,14 +22,26 @@ export function PromptBuilder({
   onSelectionsChange,
   onDraftPromptChange
 }: PromptBuilderProps) {
-  const updateMaterial = (field: keyof PromptSelections["materials"], value: string) => {
+  const updateMaterial = (field: keyof PromptSelections["materialDetail"], value: string) => {
     onSelectionsChange((previous) => ({
       ...previous,
-      materials: {
-        ...previous.materials,
+      materialDetail: {
+        ...previous.materialDetail,
         [field]: value
       }
     }));
+  };
+
+  const toggleNegativePrompt = (option: NegativePromptOption) => {
+    onSelectionsChange((previous) => {
+      const exists = previous.negativePrompts.includes(option);
+      return {
+        ...previous,
+        negativePrompts: exists
+          ? previous.negativePrompts.filter((item) => item !== option)
+          : [...previous.negativePrompts, option]
+      };
+    });
   };
 
   return (
@@ -38,28 +51,196 @@ export function PromptBuilder({
         <h2>ArchViz Prompt Optimization Workspace</h2>
       </div>
 
-      <div className="builder-grid">
-        <ModuleSelect
-          label="Scene Type"
-          value={selections.sceneType}
-          options={SCENE_TYPES}
-          onChange={(value) => onSelectionsChange((previous) => ({ ...previous, sceneType: value }))}
-        />
+      <div className="card-like">
+        <h3>1. Project Context</h3>
+        <div className="builder-grid">
+          <label>
+            <span>Project Name</span>
+            <input
+              value={selections.projectContext.projectName}
+              onChange={(event) =>
+                onSelectionsChange((previous) => ({
+                  ...previous,
+                  projectContext: {
+                    ...previous.projectContext,
+                    projectName: event.target.value
+                  }
+                }))
+              }
+            />
+          </label>
 
-        <ModuleSelect
-          label="Building Type"
-          value={selections.buildingType}
-          options={BUILDING_TYPES}
-          onChange={(value) => onSelectionsChange((previous) => ({ ...previous, buildingType: value }))}
-        />
+          <label>
+            <span>Location</span>
+            <input
+              value={selections.projectContext.location}
+              onChange={(event) =>
+                onSelectionsChange((previous) => ({
+                  ...previous,
+                  projectContext: {
+                    ...previous.projectContext,
+                    location: event.target.value
+                  }
+                }))
+              }
+            />
+          </label>
 
-        <ModuleSelect
-          label="Atmosphere"
-          value={selections.atmosphere}
-          options={ATMOSPHERES}
-          onChange={(value) => onSelectionsChange((previous) => ({ ...previous, atmosphere: value }))}
-        />
+          <label style={{ gridColumn: "1 / -1" }}>
+            <span>Design Concept</span>
+            <textarea
+              rows={2}
+              value={selections.projectContext.designConcept}
+              onChange={(event) =>
+                onSelectionsChange((previous) => ({
+                  ...previous,
+                  projectContext: {
+                    ...previous.projectContext,
+                    designConcept: event.target.value
+                  }
+                }))
+              }
+            />
+          </label>
 
+          <ModuleSelect
+            label="Building Function"
+            value={selections.projectContext.buildingFunction}
+            options={BUILDING_FUNCTIONS}
+            onChange={(value) =>
+              onSelectionsChange((previous) => ({
+                ...previous,
+                projectContext: {
+                  ...previous.projectContext,
+                  buildingFunction: value
+                }
+              }))
+            }
+          />
+        </div>
+      </div>
+
+      <div className="card-like">
+        <h3>2. Spatial Scene</h3>
+        <div className="builder-grid">
+          <ModuleSelect
+            label="Scene Type"
+            value={selections.spatialScene.sceneType}
+            options={SCENE_TYPES}
+            onChange={(value) =>
+              onSelectionsChange((previous) => ({
+                ...previous,
+                spatialScene: {
+                  ...previous.spatialScene,
+                  sceneType: value
+                }
+              }))
+            }
+          />
+
+          <label>
+            <span>Foreground</span>
+            <input
+              value={selections.spatialScene.foreground}
+              onChange={(event) =>
+                onSelectionsChange((previous) => ({
+                  ...previous,
+                  spatialScene: {
+                    ...previous.spatialScene,
+                    foreground: event.target.value
+                  }
+                }))
+              }
+            />
+          </label>
+
+          <label>
+            <span>Middle Ground</span>
+            <input
+              value={selections.spatialScene.middleGround}
+              onChange={(event) =>
+                onSelectionsChange((previous) => ({
+                  ...previous,
+                  spatialScene: {
+                    ...previous.spatialScene,
+                    middleGround: event.target.value
+                  }
+                }))
+              }
+            />
+          </label>
+
+          <label>
+            <span>Background</span>
+            <input
+              value={selections.spatialScene.background}
+              onChange={(event) =>
+                onSelectionsChange((previous) => ({
+                  ...previous,
+                  spatialScene: {
+                    ...previous.spatialScene,
+                    background: event.target.value
+                  }
+                }))
+              }
+            />
+          </label>
+        </div>
+      </div>
+
+      <div className="card-like">
+        <h3>3. Material and Detail</h3>
+        <div className="material-grid">
+          <label>
+            <span>Facade Material</span>
+            <input
+              value={selections.materialDetail.facade}
+              onChange={(event) => updateMaterial("facade", event.target.value)}
+            />
+          </label>
+          <label>
+            <span>Ground Material</span>
+            <input
+              value={selections.materialDetail.ground}
+              onChange={(event) => updateMaterial("ground", event.target.value)}
+            />
+          </label>
+          <label>
+            <span>Roof Material</span>
+            <input
+              value={selections.materialDetail.roof}
+              onChange={(event) => updateMaterial("roof", event.target.value)}
+            />
+          </label>
+          <label>
+            <span>Landscape Material</span>
+            <input
+              value={selections.materialDetail.landscape}
+              onChange={(event) => updateMaterial("landscape", event.target.value)}
+            />
+          </label>
+          <label style={{ gridColumn: "1 / -1" }}>
+            <span>Lighting Detail</span>
+            <input
+              value={selections.materialDetail.lightingDetail}
+              onChange={(event) => updateMaterial("lightingDetail", event.target.value)}
+            />
+          </label>
+        </div>
+      </div>
+
+      <div className="card-like">
+        <h3>4. Visual Style</h3>
+        <ModuleSelect
+          label="Visual Style"
+          value={selections.visualStyle}
+          options={VISUAL_STYLES}
+          onChange={(value) => onSelectionsChange((previous) => ({ ...previous, visualStyle: value }))}
+        />
+      </div>
+
+      <div className="card-like">
+        <h3>5. Camera and Composition</h3>
         <ModuleSelect
           label="Camera + Composition"
           value={selections.cameraComposition}
@@ -68,49 +249,22 @@ export function PromptBuilder({
             onSelectionsChange((previous) => ({ ...previous, cameraComposition: value }))
           }
         />
-
-        <ModuleSelect
-          label="Output Style"
-          value={selections.outputStyle}
-          options={OUTPUT_STYLES}
-          onChange={(value) => onSelectionsChange((previous) => ({ ...previous, outputStyle: value }))}
-        />
       </div>
 
-      <div className="material-grid card-like">
-        <h3>Material System</h3>
-
-        <label>
-          <span>Facade Material</span>
-          <input
-            value={selections.materials.facade}
-            onChange={(event) => updateMaterial("facade", event.target.value)}
-          />
-        </label>
-
-        <label>
-          <span>Ground Material</span>
-          <input
-            value={selections.materials.ground}
-            onChange={(event) => updateMaterial("ground", event.target.value)}
-          />
-        </label>
-
-        <label>
-          <span>Roof Material</span>
-          <input
-            value={selections.materials.roof}
-            onChange={(event) => updateMaterial("roof", event.target.value)}
-          />
-        </label>
-
-        <label>
-          <span>Landscape Material</span>
-          <input
-            value={selections.materials.landscape}
-            onChange={(event) => updateMaterial("landscape", event.target.value)}
-          />
-        </label>
+      <div className="card-like">
+        <h3>6. Negative Prompt</h3>
+        <div className="checkbox-grid">
+          {NEGATIVE_PROMPT_OPTIONS.map((option) => (
+            <label key={option} className="check-option">
+              <input
+                type="checkbox"
+                checked={selections.negativePrompts.includes(option)}
+                onChange={() => toggleNegativePrompt(option)}
+              />
+              <span>{option}</span>
+            </label>
+          ))}
+        </div>
       </div>
 
       <div className="card-like">

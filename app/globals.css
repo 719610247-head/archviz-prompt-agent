@@ -200,11 +200,9 @@ textarea:focus {
 }
 
 .material-grid {
+  display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-.material-grid h3 {
-  grid-column: 1 / -1;
+  gap: 0.7rem;
 }
 
 .prompt-output {
@@ -243,6 +241,59 @@ textarea:focus {
   color: var(--text-subtle);
   font-size: 0.83rem;
   line-height: 1.35;
+}
+
+.checkbox-grid {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.check-option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0.45rem 0.55rem;
+  background: #fbfcfe;
+}
+
+.check-option input {
+  margin: 0;
+}
+
+.check-option span {
+  font-size: 0.82rem;
+  color: #2b3444;
+  font-weight: 500;
+}
+
+.output-block {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.output-block h4 {
+  margin: 0;
+  font-size: 0.84rem;
+  color: #39465a;
+}
+
+.explain-output {
+  margin: 0;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 0.65rem;
+  background: #f9fbfc;
+  font-size: 0.82rem;
+  line-height: 1.45;
+  white-space: pre-line;
+}
+
+.copy-output {
+  background: #f9fbfc;
+  font-size: 0.82rem;
+  line-height: 1.38;
 }
 
 @media (max-width: 1200px) {
