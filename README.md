@@ -25,6 +25,11 @@ ArchViz Prompt Agent MVP is a local-first Next.js application for architecture v
   - improvement notes
 - Fourteen structured real prompt case summaries in `data/realPromptCases.ts`, covering representative ArchViz render and editing workflows without copying long source prompts verbatim.
 - Local mock prompt optimization logic (`lib/promptOptimizer.ts`) that regenerates structured prompts from module selections and draft text.
+- Practical generated prompt actions:
+  - copy final English prompt
+  - copy full structured prompt
+  - export the current prompt as a local `.txt` file
+  - save the latest prompts to browser `localStorage`
 - Local mock API endpoint (`app/api/mock/chat/route.ts`) for serving case/reference payloads.
 
 ## Workspace Interaction Model
@@ -41,6 +46,7 @@ ArchViz Prompt Agent MVP is a local-first Next.js application for architecture v
   - Negative Prompt
   - Final English Prompt
 - Future prompt library learning can be implemented with embeddings and retrieval-augmented generation (RAG), using selected case vectors to retrieve similar precedent prompts, reference tags, and optimization notes before final prompt assembly.
+- Generated prompt output supports local copy, export, and lightweight prompt history actions without calling external services.
 
 ## Real Prompt Case Library
 - The real prompt library is currently local, mock-based, and structured as summarized case metadata rather than copied prompt text.

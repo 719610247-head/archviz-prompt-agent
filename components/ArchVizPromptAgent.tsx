@@ -114,7 +114,12 @@ export function ArchVizPromptAgent({
           onSelectionsChange={(updater) => setSelections((previous) => updater(previous))}
           onDraftPromptChange={setDraftPrompt}
         />
-        <GeneratedPromptPanel optimized={optimized} />
+        <GeneratedPromptPanel
+          optimized={optimized}
+          activeCase={activeCase}
+          projectIntent={draftPrompt}
+          onRestoreProjectIntent={setDraftPrompt}
+        />
       </section>
 
       <aside className="panel panel-right">

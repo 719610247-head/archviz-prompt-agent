@@ -344,6 +344,93 @@ textarea:focus {
   line-height: 1.38;
 }
 
+.generated-panel-head {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.prompt-action-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.small-action-button {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #f8fafc;
+  color: #263445;
+  cursor: pointer;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.38rem 0.58rem;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.small-action-button:hover {
+  border-color: #b9c7d8;
+  background: #eef3f8;
+}
+
+.small-action-button.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.copy-state {
+  color: var(--accent);
+  font-size: 0.74rem;
+  font-weight: 700;
+}
+
+.history-list {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.history-card {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #fbfcfe;
+  cursor: pointer;
+  display: grid;
+  gap: 0.25rem;
+  padding: 0.55rem 0.65rem;
+  text-align: left;
+}
+
+.history-card:hover,
+.history-card.active {
+  border-color: #9cbec3;
+  background: #f0f7f8;
+}
+
+.history-card strong {
+  font-size: 0.82rem;
+}
+
+.history-card span {
+  color: var(--text-subtle);
+  font-size: 0.72rem;
+}
+
+.history-card p {
+  color: #354153;
+  display: -webkit-box;
+  font-size: 0.78rem;
+  line-height: 1.35;
+  margin: 0;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.history-preview {
+  min-height: 78px;
+}
+
 @media (max-width: 1200px) {
   .workspace-shell {
     grid-template-columns: 1fr;
