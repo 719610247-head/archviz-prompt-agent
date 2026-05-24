@@ -9,7 +9,10 @@ const COPIED_RESET_MS = 1600;
 interface SavedPromptHistoryItem {
   id: string;
   timestamp: string;
+  selectedTaxonomyLabel: string;
+  selectedRenderPresetLabel: string;
   selectedCaseTitle: string;
+  sourceCategory: string;
   projectIntent: string;
   finalEnglishPrompt: string;
 }
@@ -17,6 +20,8 @@ interface SavedPromptHistoryItem {
 interface GeneratedPromptPanelProps {
   optimized: OptimizationResult;
   activeCase: LearningCase | null;
+  selectedTaxonomyLabel: string;
+  selectedRenderPresetLabel: string;
   projectIntent: string;
   onRestoreProjectIntent: (nextValue: string) => void;
 }
@@ -26,6 +31,8 @@ type ActionId = "final" | "structured" | "save";
 export function GeneratedPromptPanel({
   optimized,
   activeCase,
+  selectedTaxonomyLabel,
+  selectedRenderPresetLabel,
   projectIntent,
   onRestoreProjectIntent
 }: GeneratedPromptPanelProps) {
@@ -76,6 +83,8 @@ export function GeneratedPromptPanel({
 
   const exportTextFile = () => {
     const exportText = buildExportText({
+      selectedTaxonomyLabel,
+      selectedRenderPresetLabel,
       selectedCaseTitle,
       sourceCategory,
       projectIntent: normalizedProjectIntent,
@@ -96,7 +105,10 @@ export function GeneratedPromptPanel({
     const nextItem: SavedPromptHistoryItem = {
       id: `${Date.now()}-${selectedCaseTitle}`,
       timestamp: new Date().toISOString(),
+      selectedTaxonomyLabel,
+      selectedRenderPresetLabel,
       selectedCaseTitle,
+      sourceCategory,
       projectIntent: normalizedProjectIntent,
       finalEnglishPrompt: optimized.copyReadyFinalPrompt
     };
@@ -177,6 +189,9 @@ export function GeneratedPromptPanel({
               >
                 <strong>{item.selectedCaseTitle}</strong>
                 <span>{formatHistoryTime(item.timestamp)}</span>
+                <span className="history-meta">
+                  {item.selectedTaxonomyLabel} · {item.selectedRenderPresetLabel}
+                </span>
                 <p>{item.projectIntent}</p>
               </button>
             ))}
@@ -204,17 +219,23 @@ export function GeneratedPromptPanel({
 }
 
 function buildExportText({
+  selectedTaxonomyLabel,
+  selectedRenderPresetLabel,
   selectedCaseTitle,
   sourceCategory,
   projectIntent,
   optimized
 }: {
+  selectedTaxonomyLabel: string;
+  selectedRenderPresetLabel: string;
   selectedCaseTitle: string;
   sourceCategory: string;
   projectIntent: string;
   optimized: OptimizationResult;
 }): string {
   return [
+    `Selected Building Taxonomy: ${selectedTaxonomyLabel}`,
+    `Selected Render Preset: ${selectedRenderPresetLabel}`,
     `Selected Case Title: ${selectedCaseTitle}`,
     `Source Category: ${sourceCategory}`,
     "",

@@ -303,6 +303,8 @@ export function ArchVizPromptAgent({
         <GeneratedPromptPanel
           optimized={optimized}
           activeCase={activeCase}
+          selectedTaxonomyLabel={taxonomyLabel}
+          selectedRenderPresetLabel={activeRenderPreset.buildingCategoryLabel}
           projectIntent={draftPrompt}
           onRestoreProjectIntent={setDraftPrompt}
         />

@@ -454,6 +454,11 @@ textarea:focus {
   font-size: 0.72rem;
 }
 
+.history-card .history-meta {
+  color: #4a6078;
+  font-size: 0.7rem;
+}
+
 .history-card p {
   color: #354153;
   display: -webkit-box;

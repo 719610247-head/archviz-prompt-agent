@@ -30,8 +30,8 @@ ArchViz Prompt Agent MVP is a local-first Next.js application for architecture v
 - Practical generated prompt actions:
   - copy final English prompt
   - copy full structured prompt
-  - export the current prompt as a local `.txt` file
-  - save the latest prompts to browser `localStorage`
+  - export the current prompt as a local `.txt` file (including taxonomy, preset, case, and final prompt content)
+  - save the latest prompts to browser `localStorage` (including taxonomy/preset context)
 - Local mock API endpoint (`app/api/mock/chat/route.ts`) for serving case/reference payloads.
 
 ## Workspace Interaction Model
