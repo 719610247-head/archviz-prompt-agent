@@ -31,6 +31,12 @@ export function StyleReferencePanel({
           <strong>{activeCase?.sceneType}</strong>
         </p>
         <div className="derived-reference-grid">
+          {activeCase?.sourceCategory ? (
+            <div>
+              <strong>Source</strong>
+              <p className="muted">{activeCase.sourceCategory}</p>
+            </div>
+          ) : null}
           <div>
             <strong>Materials</strong>
             <TagList tags={activeCase?.materialTags ?? []} subtle />
@@ -43,6 +49,12 @@ export function StyleReferencePanel({
             <strong>Camera</strong>
             <TagList tags={activeCase?.cameraTags ?? []} subtle />
           </div>
+          {activeCase?.modelSuitability ? (
+            <div>
+              <strong>Model Suitability</strong>
+              <TagList tags={activeCase.modelSuitability} subtle />
+            </div>
+          ) : null}
         </div>
       </section>
 

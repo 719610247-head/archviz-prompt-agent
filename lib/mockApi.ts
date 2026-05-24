@@ -1,9 +1,12 @@
-﻿import { mockLearningCases, mockStyleReferences } from "@/data/mockLearningCases";
+import { mockLearningCases, mockStyleReferences } from "@/data/mockLearningCases";
+import { realLearningCases } from "@/data/realPromptCases";
 import type { LearningCase, StyleReference } from "@/types/archviz";
+
+const allLearningCases: LearningCase[] = [...mockLearningCases, ...realLearningCases];
 
 export async function getMockLearningCases(): Promise<LearningCase[]> {
   await wait(120);
-  return mockLearningCases;
+  return allLearningCases;
 }
 
 export async function getMockStyleReferences(): Promise<StyleReference[]> {
@@ -15,7 +18,7 @@ export async function getMockLearningCaseById(
   id: string
 ): Promise<LearningCase | null> {
   await wait(100);
-  return mockLearningCases.find((item) => item.id === id) ?? null;
+  return allLearningCases.find((item) => item.id === id) ?? null;
 }
 
 async function wait(ms: number): Promise<void> {

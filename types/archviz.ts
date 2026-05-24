@@ -4,7 +4,12 @@
   "aerial",
   "street",
   "masterplan",
-  "section perspective"
+  "section perspective",
+  "blue-hour exterior",
+  "interior close-up",
+  "material editing",
+  "local editing",
+  "cityscape"
 ] as const;
 
 export const BUILDING_FUNCTIONS = [
@@ -13,7 +18,18 @@ export const BUILDING_FUNCTIONS = [
   "residential",
   "commercial",
   "school",
-  "cultural building"
+  "cultural building",
+  "factory",
+  "market",
+  "mixed-use complex",
+  "campus",
+  "swimming hall",
+  "cityscape",
+  "eco-city",
+  "art center",
+  "glass corridor",
+  "material editing",
+  "local editing"
 ] as const;
 
 export const VISUAL_STYLES = [
@@ -22,7 +38,11 @@ export const VISUAL_STYLES = [
   "Japanese minimal",
   "Nordic soft tone",
   "cinematic atmosphere",
-  "diagrammatic architecture visualization"
+  "diagrammatic architecture visualization",
+  "photoreal commercial render",
+  "aerial masterplan visualization",
+  "AI concept visualization",
+  "material edit preview"
 ] as const;
 
 export const CAMERA_COMPOSITIONS = [
@@ -30,7 +50,13 @@ export const CAMERA_COMPOSITIONS = [
   "wide angle",
   "axonometric",
   "symmetrical composition",
-  "documentary composition"
+  "documentary composition",
+  "bird's-eye",
+  "drone aerial",
+  "close-up",
+  "one-point perspective",
+  "segmentation mask",
+  "zoomed local edit"
 ] as const;
 
 export const NEGATIVE_PROMPT_OPTIONS = [
@@ -92,6 +118,12 @@ export interface LearningCase {
   cameraTags: string[];
   improvementNotes: string[];
   preset: PromptSelections;
+  sourceCategory?: string;
+  viewControl?: string;
+  entourage?: string;
+  optimizationStrategy?: string;
+  reusablePromptPattern?: string;
+  modelSuitability?: string[];
 }
 
 export interface StyleReference {

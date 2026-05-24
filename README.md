@@ -23,6 +23,7 @@ ArchViz Prompt Agent MVP is a local-first Next.js application for architecture v
   - style tags
   - material, atmosphere, and camera reference tags
   - improvement notes
+- Fourteen structured real prompt case summaries in `data/realPromptCases.ts`, covering representative ArchViz render and editing workflows without copying long source prompts verbatim.
 - Local mock prompt optimization logic (`lib/promptOptimizer.ts`) that regenerates structured prompts from module selections and draft text.
 - Local mock API endpoint (`app/api/mock/chat/route.ts`) for serving case/reference payloads.
 
@@ -40,6 +41,12 @@ ArchViz Prompt Agent MVP is a local-first Next.js application for architecture v
   - Negative Prompt
   - Final English Prompt
 - Future prompt library learning can be implemented with embeddings and retrieval-augmented generation (RAG), using selected case vectors to retrieve similar precedent prompts, reference tags, and optimization notes before final prompt assembly.
+
+## Real Prompt Case Library
+- The real prompt library is currently local, mock-based, and structured as summarized case metadata rather than copied prompt text.
+- Each real case includes source category, building type, scene type, view control, material system, atmosphere, camera composition, entourage, negative prompt rules, optimization strategy, reusable prompt pattern, and model suitability.
+- The app adapts real structured cases into the same Render Case Library used by the mock examples, so selecting a real case can drive building type, style references, materials, atmosphere, camera guidance, and generated prompt structure.
+- A future OpenAI integration can create embeddings from these structured fields and use RAG to retrieve similar cases, prompt patterns, negative rules, and optimization strategies before generating the final prompt.
 
 ## Local Development Commands
 ```bash
@@ -66,11 +73,13 @@ components/
   TagList.tsx
 data/
   mockLearningCases.ts
+  realPromptCases.ts
 lib/
   mockApi.ts
   promptOptimizer.ts
 types/
   archviz.ts
+  realPromptCase.ts
 README.md
 package.json
 tsconfig.json

@@ -17,6 +17,8 @@ export function buildOptimizedPrompt({
   const negativePrompt = buildNegativePrompt(selections.negativePrompts);
   const caseTitle = renderCase?.title ?? "Custom local render case";
   const caseStructure = renderCase?.description ?? "Local mock render case structure";
+  const sourceCategory = renderCase?.sourceCategory ?? "local mock case";
+  const viewControl = renderCase?.viewControl ?? selections.cameraComposition;
   const styleReferences = renderCase?.styleTags.join(", ") ?? selections.visualStyle;
   const materialReferences =
     renderCase?.materialTags.join(", ") ??
@@ -32,7 +34,8 @@ export function buildOptimizedPrompt({
   const finalEnglishPrompt = [
     projectIntent,
     `${selections.projectContext.projectName}, ${selections.projectContext.buildingFunction} in ${selections.projectContext.location}, concept: ${selections.projectContext.designConcept}.`,
-    `${capitalize(selections.spatialScene.sceneType)} composition based on ${caseTitle}: ${caseStructure}.`,
+    `${capitalize(selections.spatialScene.sceneType)} composition based on ${caseTitle} (${sourceCategory}): ${caseStructure}.`,
+    `View control: ${viewControl}.`,
     `Foreground: ${selections.spatialScene.foreground}; middle ground: ${selections.spatialScene.middleGround}; background: ${selections.spatialScene.background}.`,
     `Facade system: ${selections.materialDetail.facade}; ground: ${selections.materialDetail.ground}; roof: ${selections.materialDetail.roof}; landscape: ${selections.materialDetail.landscape}.`,
     `Atmosphere and lighting: ${selections.materialDetail.lightingDetail}; references: ${atmosphereReferences}.`,
@@ -48,6 +51,7 @@ export function buildOptimizedPrompt({
     "",
     "[Architectural Subject]",
     `Selected Render Case: ${caseTitle}.`,
+    `Source Category: ${sourceCategory}.`,
     `Case Structure: ${caseStructure}.`,
     `Project Name: ${selections.projectContext.projectName}.`,
     `Building Type: ${selections.projectContext.buildingFunction}.`,
@@ -56,6 +60,7 @@ export function buildOptimizedPrompt({
     "",
     "[Scene and Spatial Composition]",
     `Scene Type: ${selections.spatialScene.sceneType}.`,
+    `View Control: ${viewControl}.`,
     `Foreground: ${selections.spatialScene.foreground}.`,
     `Middle Ground: ${selections.spatialScene.middleGround}.`,
     `Background: ${selections.spatialScene.background}.`,
@@ -78,6 +83,8 @@ export function buildOptimizedPrompt({
     "[Rendering Style]",
     `Style Direction: ${selections.visualStyle}.`,
     `Style References: ${styleReferences}.`,
+    `Reusable Pattern: ${renderCase?.reusablePromptPattern ?? finalEnglishPrompt}.`,
+    `Model Suitability: ${renderCase?.modelSuitability?.join(", ") ?? "local template optimization"}.`,
     "Optimization Rules: keep architectural geometry legible, preserve facade rhythm, avoid decorative clutter, balance human scale with material fidelity.",
     "",
     "[Negative Prompt]",

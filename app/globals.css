@@ -244,6 +244,11 @@ textarea:focus {
   font-size: 0.82rem;
 }
 
+.derived-reference-grid p {
+  margin-top: 0.35rem;
+  line-height: 1.35;
+}
+
 .reference-card {
   border: 1px dashed #c8d1df;
   border-radius: 10px;
