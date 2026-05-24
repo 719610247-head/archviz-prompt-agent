@@ -26,7 +26,10 @@ ArchViz Prompt Agent MVP is a local-first Next.js application for architecture v
 - Fourteen structured real prompt case summaries in `data/realPromptCases.ts`, covering representative ArchViz render and editing workflows without copying long source prompts verbatim.
 - Multi-level building taxonomy in `data/buildingTaxonomy.ts` for Civil, Industrial, Agricultural, and public-building subtype classification.
 - Render presets in `data/renderPresets.ts` that recommend atmosphere, materials, camera, scene types, rendering style, prompt keywords, negative rules, and design intent by building subtype.
+- Explicit taxonomy matching for render cases (`taxonomyPath` and optional `compatibleTaxonomyPaths`) to prevent unrelated case leakage across building categories.
+- Exact preset-based filtering via `compatiblePresetIds`, so sibling presets such as Museum and Library do not share unrelated cases just because they sit under the same cultural taxonomy branch.
 - Local mock prompt optimization logic (`lib/promptOptimizer.ts`) that regenerates structured prompts from module selections and draft text.
+- Local mock intent refinement logic (`lib/intentRefiner.ts`) that turns casual Chinese/English project intent text into professional ArchViz intent directives.
 - Practical generated prompt actions:
   - copy final English prompt
   - copy full structured prompt
@@ -37,7 +40,9 @@ ArchViz Prompt Agent MVP is a local-first Next.js application for architecture v
 ## Workspace Interaction Model
 - The Render Case Library drives the active building type, scene type, and core style references. Selecting a render case automatically updates the workspace instead of asking the user to manually choose Building Type.
 - The Building Type Preset layer sits above the case library. Users select a taxonomy path, review the matching render preset, and then continue adjusting scene, material, atmosphere, camera, and style fields manually.
-- The case library layer becomes Relevant Render Cases. It filters examples by the selected render preset when matches exist, and falls back to all local cases when no exact match is available.
+- The case library layer becomes Relevant Render Cases. It filters examples by selected building taxonomy and preset compatibility.
+- Relevant Render Cases now use explicit taxonomy path matching only. If no exact match exists, the UI keeps a clean empty state and still allows preset-driven prompt generation.
+- When a specific render preset is selected, Relevant Render Cases require explicit preset compatibility. Broad taxonomy matching is reserved for general presets only.
 - Project Intent / Draft Prompt represents the user's project intention. It mainly feeds the `Project Intent` section of the generated optimized prompt while the selected case supplies architectural structure and reference logic.
 - Scene, material, atmosphere, camera, style, output preferences, and architecture-specific optimization rules are combined into a structured prompt format:
   - Project Intent
@@ -51,6 +56,7 @@ ArchViz Prompt Agent MVP is a local-first Next.js application for architecture v
   - Final English Prompt
 - Future prompt library learning can be implemented with embeddings and retrieval-augmented generation (RAG), using selected case vectors to retrieve similar precedent prompts, reference tags, and optimization notes before final prompt assembly.
 - Generated prompt output supports local copy, export, and lightweight prompt history actions without calling external services.
+- Case-Based Reference explains how selected cases or presets influence building type, scene strategy, materials, atmosphere, camera choices, and final prompt composition.
 
 ## Taxonomy, Presets, And Cases
 - Building taxonomy layer: organizes projects into Civil Buildings, Industrial Buildings, Agricultural Buildings, and deeper public-building subtypes such as education, commercial, cultural, medical, sports, transportation, and memorial.

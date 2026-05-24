@@ -5,7 +5,6 @@ import { TagList } from "@/components/TagList";
 
 interface CaseListProps {
   learningCases: LearningCase[];
-  allCaseCount: number;
   selectedCaseId: string;
   taxonomy: BuildingTaxonomyNode[];
   renderPresets: RenderPreset[];
@@ -20,7 +19,6 @@ interface CaseListProps {
 
 export function CaseList({
   learningCases,
-  allCaseCount,
   selectedCaseId,
   taxonomy,
   renderPresets,
@@ -159,31 +157,32 @@ export function CaseList({
 
       {showFallbackCases ? (
         <p className="muted">
-          No exact case match for this preset yet, showing all {allCaseCount} cases.
+          No exact render case found for {selectedRenderPreset.buildingCategoryLabel}. You can still use the selected render preset as a starting point.
         </p>
       ) : (
-        <p className="muted">Showing {learningCases.length} case(s) matched to this preset.</p>
+        <>
+          <p className="muted">Showing {learningCases.length} case(s) matched to this preset.</p>
+          <div className="case-list">
+            {learningCases.map((item) => (
+              <button
+                key={item.id}
+                type="button"
+                className={item.id === selectedCaseId ? "case-card active" : "case-card"}
+                onClick={() => onSelectCase(item)}
+              >
+                <div className="case-card-head">
+                  <strong>{item.title}</strong>
+                  <span className={item.sourceCategory ? "case-badge real" : "case-badge"}>
+                    {item.sourceCategory ? "Real Structured Case" : "Mock Case"}
+                  </span>
+                </div>
+                <p>{item.description}</p>
+                <TagList tags={[item.buildingType, item.sceneType, ...item.styleTags]} />
+              </button>
+            ))}
+          </div>
+        </>
       )}
-
-      <div className="case-list">
-        {learningCases.map((item) => (
-          <button
-            key={item.id}
-            type="button"
-            className={item.id === selectedCaseId ? "case-card active" : "case-card"}
-            onClick={() => onSelectCase(item)}
-          >
-            <div className="case-card-head">
-              <strong>{item.title}</strong>
-              <span className={item.sourceCategory ? "case-badge real" : "case-badge"}>
-                {item.sourceCategory ? "Real Structured Case" : "Mock Case"}
-              </span>
-            </div>
-            <p>{item.description}</p>
-            <TagList tags={[item.buildingType, item.sceneType, ...item.styleTags]} />
-          </button>
-        ))}
-      </div>
     </>
   );
 }

@@ -113,60 +113,38 @@ function getBestPresetForPath(path: TaxonomyPath): RenderPreset {
 }
 
 function getInitialRenderPreset(renderCase: LearningCase | null): RenderPreset {
-  if (renderCase) {
-    return renderPresets.find((preset) => caseMatchesRenderPreset(renderCase, preset)) ?? renderPresets[0];
-  }
-
   return renderPresets[0];
 }
 
-function caseMatchesRenderPreset(renderCase: LearningCase, renderPreset: RenderPreset): boolean {
-  const searchableText = [
-    renderCase.title,
-    renderCase.description,
-    renderCase.buildingType,
-    renderCase.sourceCategory ?? "",
-    renderCase.optimizationStrategy ?? ""
-  ]
-    .join(" ")
-    .toLowerCase();
+function pathMatches(left: TaxonomyPath, right: TaxonomyPath): boolean {
+  return taxonomyPathKey(left) === taxonomyPathKey(right);
+}
 
-  if (renderCase.buildingType === renderPreset.buildingType) {
-    return true;
+function getCaseTaxonomyPaths(renderCase: LearningCase): TaxonomyPath[] {
+  return [renderCase.taxonomyPath ?? [], ...(renderCase.compatibleTaxonomyPaths ?? [])].filter(
+    (path) => path.length > 0
+  );
+}
+
+function caseMatchesTaxonomyOrPreset(
+  renderCase: LearningCase,
+  selectedTaxonomyPath: TaxonomyPath,
+  selectedRenderPreset: RenderPreset
+): boolean {
+  if (!isBroadPreset(selectedRenderPreset)) {
+    return (renderCase.compatiblePresetIds ?? []).includes(selectedRenderPreset.id);
   }
 
-  switch (renderPreset.id) {
-    case "public-building-general":
-      return searchableText.includes("public") || searchableText.includes("civic") || searchableText.includes("community");
-    case "residential-general":
-      return searchableText.includes("residential") || searchableText.includes("housing");
-    case "museum-art-gallery":
-      return searchableText.includes("museum") || searchableText.includes("gallery") || searchableText.includes("art center");
-    case "community-center":
-      return searchableText.includes("community");
-    case "library":
-      return searchableText.includes("library");
-    case "school-campus":
-      return searchableText.includes("school") || searchableText.includes("campus");
-    case "office-building":
-      return searchableText.includes("office") || searchableText.includes("workplace");
-    case "commercial-building":
-      return searchableText.includes("commercial") || searchableText.includes("market") || searchableText.includes("mixed-use");
-    case "medical-building":
-      return searchableText.includes("medical") || searchableText.includes("hospital") || searchableText.includes("clinic");
-    case "sports-building":
-      return searchableText.includes("sports") || searchableText.includes("swimming");
-    case "transportation-hub":
-      return searchableText.includes("transport") || searchableText.includes("transit") || searchableText.includes("station");
-    case "memorial-building":
-      return searchableText.includes("memorial") || searchableText.includes("memory");
-    case "industrial-renovation":
-      return searchableText.includes("factory") || searchableText.includes("industrial") || searchableText.includes("adaptive reuse");
-    case "agricultural-production":
-      return searchableText.includes("agricultural") || searchableText.includes("production") || searchableText.includes("greenhouse");
-    default:
-      return false;
-  }
+  const casePaths = getCaseTaxonomyPaths(renderCase);
+
+  return casePaths.some(
+    (path) =>
+      pathMatches(path, selectedTaxonomyPath) || pathMatches(path, selectedRenderPreset.taxonomyPath)
+  );
+}
+
+function isBroadPreset(renderPreset: RenderPreset): boolean {
+  return renderPreset.id === "public-building-general";
 }
 
 function taxonomyLabelForPath(path: TaxonomyPath): string {
@@ -217,10 +195,13 @@ export function ArchVizPromptAgent({
     [selectedTaxonomyPath]
   );
   const exactRelevantCases = useMemo(
-    () => learningCases.filter((item) => caseMatchesRenderPreset(item, activeRenderPreset)),
-    [activeRenderPreset, learningCases]
+    () =>
+      learningCases.filter((item) =>
+        caseMatchesTaxonomyOrPreset(item, selectedTaxonomyPath, activeRenderPreset)
+      ),
+    [activeRenderPreset, learningCases, selectedTaxonomyPath]
   );
-  const visibleLearningCases = exactRelevantCases.length ? exactRelevantCases : learningCases;
+  const visibleLearningCases = exactRelevantCases;
 
   const optimized = useMemo(
     () =>
@@ -240,27 +221,42 @@ export function ArchVizPromptAgent({
     setSelections(selectionsFromCase(selected));
   };
 
-  const applyPresetAndSelectRelevantCase = (renderPreset: RenderPreset) => {
+  const applyPresetAndSelectRelevantCase = (
+    renderPreset: RenderPreset,
+    taxonomyPath: TaxonomyPath = selectedTaxonomyPath
+  ) => {
     setSelections((previous) => applyRenderPresetToSelections(previous, renderPreset));
 
-    const firstRelevantCase = learningCases.find((item) => caseMatchesRenderPreset(item, renderPreset));
+    const firstRelevantCase = learningCases.find((item) =>
+      caseMatchesTaxonomyOrPreset(item, taxonomyPath, renderPreset)
+    );
     if (firstRelevantCase) {
       setSelectedCaseId(firstRelevantCase.id);
+      setDraftPrompt(firstRelevantCase.originalPrompt);
+      return;
     }
+
+    setSelectedCaseId("");
+    setDraftPrompt(renderPreset.designIntentHint);
   };
 
   const onTaxonomyPathChange = (path: TaxonomyPath) => {
     setSelectedTaxonomyPath(path);
     const nextPreset = getBestPresetForPath(path);
     setSelectedRenderPresetId(nextPreset.id);
-    applyPresetAndSelectRelevantCase(nextPreset);
+    setSelections((previous) => applyRenderPresetToSelections(previous, nextPreset));
+    const firstRelevantCase = learningCases.find((item) =>
+      caseMatchesTaxonomyOrPreset(item, path, nextPreset)
+    );
+    setSelectedCaseId(firstRelevantCase?.id ?? "");
+    setDraftPrompt(firstRelevantCase?.originalPrompt ?? nextPreset.designIntentHint);
   };
 
   const onRenderPresetChange = (presetId: string) => {
     const nextPreset = renderPresets.find((preset) => preset.id === presetId) ?? renderPresets[0];
     setSelectedRenderPresetId(nextPreset.id);
     setSelectedTaxonomyPath(nextPreset.taxonomyPath);
-    applyPresetAndSelectRelevantCase(nextPreset);
+    applyPresetAndSelectRelevantCase(nextPreset, nextPreset.taxonomyPath);
   };
 
   if (!learningCases.length) {
@@ -279,7 +275,6 @@ export function ArchVizPromptAgent({
       <aside className="panel panel-left">
         <CaseList
           learningCases={visibleLearningCases}
-          allCaseCount={learningCases.length}
           selectedCaseId={selectedCaseId}
           taxonomy={buildingTaxonomy}
           renderPresets={renderPresets}
@@ -311,7 +306,12 @@ export function ArchVizPromptAgent({
       </section>
 
       <aside className="panel panel-right">
-        <StyleReferencePanel activeCase={activeCase} styleReferences={styleReferences} />
+        <StyleReferencePanel
+          activeCase={activeCase}
+          activeRenderPreset={activeRenderPreset}
+          taxonomyLabel={taxonomyLabel}
+          styleReferences={styleReferences}
+        />
       </aside>
     </main>
   );

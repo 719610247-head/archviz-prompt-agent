@@ -83,6 +83,7 @@ export type BuildingFunction = (typeof BUILDING_FUNCTIONS)[number];
 export type VisualStyle = (typeof VISUAL_STYLES)[number];
 export type CameraComposition = (typeof CAMERA_COMPOSITIONS)[number];
 export type NegativePromptOption = (typeof NEGATIVE_PROMPT_OPTIONS)[number];
+export type TaxonomyPath = string[];
 
 export interface ProjectContext {
   projectName: string;
@@ -135,6 +136,9 @@ export interface LearningCase {
   optimizationStrategy?: string;
   reusablePromptPattern?: string;
   modelSuitability?: string[];
+  taxonomyPath?: TaxonomyPath;
+  compatibleTaxonomyPaths?: TaxonomyPath[];
+  compatiblePresetIds?: string[];
 }
 
 export interface StyleReference {

@@ -1,4 +1,5 @@
 import type { BuildingFunction, SceneType } from "@/types/archviz";
+import type { TaxonomyPath } from "@/types/buildingTaxonomy";
 
 export interface RealPromptCase {
   id: string;
@@ -15,4 +16,7 @@ export interface RealPromptCase {
   optimizationStrategy: string[];
   reusablePromptPattern: string;
   modelSuitability: string[];
+  taxonomyPath: TaxonomyPath;
+  compatibleTaxonomyPaths?: TaxonomyPath[];
+  compatiblePresetIds?: string[];
 }

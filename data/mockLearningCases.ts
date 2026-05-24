@@ -16,6 +16,8 @@ export const mockLearningCases: LearningCase[] = [
     materialTags: ["brushed titanium panels", "wet granite pavers", "standing seam zinc roof"],
     atmosphereTags: ["dusk", "warm interior glow", "water reflections"],
     cameraTags: ["eye-level", "wide angle", "pedestrian scale"],
+    taxonomyPath: ["civil-buildings", "public-buildings", "cultural-entertainment"],
+    compatiblePresetIds: ["museum-art-gallery"],
     improvementNotes: [
       "Clarified site context and circulation around the museum.",
       "Specified facade, ground, and landscape materials for sharper texture control.",
@@ -67,6 +69,9 @@ export const mockLearningCases: LearningCase[] = [
     materialTags: ["timber slats", "light brick", "permeable stone paving"],
     atmosphereTags: ["neutral daylight", "welcoming civic mood", "soft canopy shadows"],
     cameraTags: ["street view", "eye-level", "documentary composition"],
+    taxonomyPath: ["civil-buildings", "public-buildings", "civil-affairs-buildings"],
+    compatibleTaxonomyPaths: [["civil-buildings", "public-buildings"]],
+    compatiblePresetIds: ["community-center"],
     improvementNotes: [
       "Added user groups and social activity to strengthen narrative.",
       "Refined material palette to support approachable public identity.",
@@ -117,6 +122,8 @@ export const mockLearningCases: LearningCase[] = [
     materialTags: ["pale concrete", "vertical timber fins", "compacted gravel"],
     atmosphereTags: ["soft overcast", "calm forest edge", "low-contrast shadows"],
     cameraTags: ["aerial-oblique", "axonometric-informed", "massing rhythm"],
+    taxonomyPath: ["civil-buildings", "residential-buildings"],
+    compatiblePresetIds: ["residential-general"],
     improvementNotes: [
       "Translated vague mood into measurable climate and light conditions.",
       "Introduced massing logic and courtyard relationships.",
@@ -167,6 +174,9 @@ export const mockLearningCases: LearningCase[] = [
     materialTags: ["low-iron glass", "anodized aluminum", "basalt paving"],
     atmosphereTags: ["rainy day", "active storefront glow", "urban energy"],
     cameraTags: ["street-corner perspective", "symmetrical composition", "dynamic frontage"],
+    taxonomyPath: ["civil-buildings", "public-buildings", "commercial-buildings"],
+    compatibleTaxonomyPaths: [["civil-buildings", "public-buildings", "transportation-buildings"]],
+    compatiblePresetIds: ["commercial-building"],
     improvementNotes: [
       "Anchored building in a specific transit context.",
       "Enhanced weather behavior for reflective surface realism.",
@@ -218,6 +228,8 @@ export const mockLearningCases: LearningCase[] = [
     materialTags: ["off-white plaster", "charred timber accents", "raked gravel"],
     atmosphereTags: ["Japanese minimal", "soft ambient light", "quiet courtyard"],
     cameraTags: ["section perspective", "close-up threshold framing", "annotation-ready"],
+    taxonomyPath: ["civil-buildings", "public-buildings", "educational-buildings"],
+    compatiblePresetIds: ["school-campus"],
     improvementNotes: [
       "Focused on threshold experience and child-scale detailing.",
       "Converted abstract style request into material and landscape decisions.",

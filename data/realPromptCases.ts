@@ -36,6 +36,8 @@ export const realPromptCases: RealPromptCase[] = [
       "Prioritize urban context before material detail.",
       "Separate roofscape, plaza, and street edge for spatial readability."
     ],
+    taxonomyPath: ["civil-buildings", "public-buildings", "cultural-entertainment"],
+    compatiblePresetIds: ["museum-art-gallery"],
     reusablePromptPattern:
       "Aerial architectural visualization of a civic museum, clear massing and roofscape, active entry plaza, material palette specified, realistic daylight, readable urban context.",
     modelSuitability: ["Midjourney", "Stable Diffusion", "DALL-E style ideation"]
@@ -61,6 +63,8 @@ export const realPromptCases: RealPromptCase[] = [
       "Contrast retained industrial fabric with new interventions.",
       "Use circulation and roof rhythm as the organizing structure."
     ],
+    taxonomyPath: ["industrial-buildings"],
+    compatiblePresetIds: ["industrial-renovation"],
     reusablePromptPattern:
       "Adaptive reuse aerial render of a renovated factory campus, preserved brick and steel structure, new glass public spine, readable phasing, realistic site activity.",
     modelSuitability: ["Midjourney", "Stable Diffusion", "ControlNet reference workflow"]
@@ -86,6 +90,9 @@ export const realPromptCases: RealPromptCase[] = [
       "Balance cool ambient light with warm market interiors.",
       "Keep the historic shell readable behind active foreground life."
     ],
+    taxonomyPath: ["industrial-buildings"],
+    compatibleTaxonomyPaths: [["civil-buildings", "public-buildings", "commercial-buildings"]],
+    compatiblePresetIds: ["industrial-renovation", "commercial-building"],
     reusablePromptPattern:
       "Blue-hour street render of an adaptive reuse factory market, warm interior stalls inside a brick shell, wet reflective ground, controlled lively public atmosphere.",
     modelSuitability: ["Midjourney", "Stable Diffusion", "image-to-image refinement"]
@@ -111,6 +118,8 @@ export const realPromptCases: RealPromptCase[] = [
       "Use shoreline geometry to anchor the composition.",
       "Control white materials with soft shadow and facade articulation."
     ],
+    taxonomyPath: ["civil-buildings", "public-buildings", "cultural-entertainment"],
+    compatiblePresetIds: ["museum-art-gallery"],
     reusablePromptPattern:
       "Coastal aerial museum render with white concrete volumes, shoreline promenade, water reflections, landscape terraces, realistic scale and clear architectural hierarchy.",
     modelSuitability: ["Midjourney", "Stable Diffusion", "aerial concept boards"]
@@ -136,6 +145,8 @@ export const realPromptCases: RealPromptCase[] = [
       "Specify planter logic and structural rhythm.",
       "Keep vegetation integrated with facade modules rather than scattered decor."
     ],
+    taxonomyPath: ["civil-buildings", "public-buildings", "commercial-buildings"],
+    compatiblePresetIds: ["commercial-building"],
     reusablePromptPattern:
       "Photoreal street view of a vertical forest mixed-use complex, modular planted balconies, active podium, disciplined tower geometry, realistic urban scale.",
     modelSuitability: ["Midjourney", "Stable Diffusion", "facade variation studies"]
@@ -161,6 +172,8 @@ export const realPromptCases: RealPromptCase[] = [
       "Organize by circulation, open space, and program clusters.",
       "Use consistent roof and landscape language for masterplan cohesion."
     ],
+    taxonomyPath: ["civil-buildings", "public-buildings", "educational-buildings"],
+    compatiblePresetIds: ["school-campus"],
     reusablePromptPattern:
       "Architectural campus masterplan render, academic buildings around courtyards, readable pedestrian network, landscape hierarchy, soft daylight, clean planning visualization.",
     modelSuitability: ["Stable Diffusion", "ControlNet massing workflow", "diagram-to-render workflow"]
@@ -186,6 +199,8 @@ export const realPromptCases: RealPromptCase[] = [
       "Make child-scale details and entry sequence explicit.",
       "Use restrained color accents to support identity without visual noise."
     ],
+    taxonomyPath: ["civil-buildings", "public-buildings", "educational-buildings"],
+    compatiblePresetIds: ["school-campus"],
     reusablePromptPattern:
       "Realistic middle school exterior render, welcoming entrance, classroom wings, safe student circulation, light brick and color accents, morning daylight.",
     modelSuitability: ["Midjourney", "Stable Diffusion", "client presentation render"]
@@ -211,6 +226,8 @@ export const realPromptCases: RealPromptCase[] = [
       "Control reflection, lane geometry, and roof rhythm.",
       "Keep safety equipment and people secondary to spatial clarity."
     ],
+    taxonomyPath: ["civil-buildings", "public-buildings", "sports-buildings"],
+    compatiblePresetIds: ["sports-building"],
     reusablePromptPattern:
       "Interior render of a modern swimming hall, clear pool lanes, warm roof structure, diffuse daylight, controlled water reflections, realistic sports facility atmosphere.",
     modelSuitability: ["Stable Diffusion", "Midjourney", "interior lighting studies"]
@@ -236,6 +253,9 @@ export const realPromptCases: RealPromptCase[] = [
       "Anchor speculation in believable urban infrastructure.",
       "Use glow and transit as hierarchy, not decoration."
     ],
+    taxonomyPath: ["civil-buildings", "public-buildings", "landscape-garden-buildings"],
+    compatibleTaxonomyPaths: [["civil-buildings", "public-buildings", "transportation-buildings"]],
+    compatiblePresetIds: [],
     reusablePromptPattern:
       "Futuristic metropolis aerial concept, layered transit and landmark towers, green terraces, cinematic dusk glow, coherent urban planning and readable scale.",
     modelSuitability: ["Midjourney", "DALL-E style ideation", "concept exploration"]
@@ -261,6 +281,8 @@ export const realPromptCases: RealPromptCase[] = [
       "Make ecological systems legible as infrastructure.",
       "Balance urban density with open-space continuity."
     ],
+    taxonomyPath: ["civil-buildings", "public-buildings", "landscape-garden-buildings"],
+    compatiblePresetIds: [],
     reusablePromptPattern:
       "Eco-city masterplan visualization with mixed-use districts, blue-green infrastructure, transit loops, renewable systems, and clear sustainable urban hierarchy.",
     modelSuitability: ["Stable Diffusion", "ControlNet planning base", "competition boards"]
@@ -286,6 +308,8 @@ export const realPromptCases: RealPromptCase[] = [
       "Describe geometry as controlled organic surfaces, not vague fluidity.",
       "Keep seams, entrances, and plaza edges architecturally believable."
     ],
+    taxonomyPath: ["civil-buildings", "public-buildings", "cultural-entertainment"],
+    compatiblePresetIds: ["museum-art-gallery"],
     reusablePromptPattern:
       "Organic art center exterior render with flowing white shell, curved glass entry, continuous civic plaza, sculptural but buildable geometry, dramatic daylight.",
     modelSuitability: ["Midjourney", "DALL-E style ideation", "concept massing exploration"]
@@ -311,6 +335,8 @@ export const realPromptCases: RealPromptCase[] = [
       "Use mullion rhythm and floor joints to stabilize perspective.",
       "Control transparency so interior and exterior layers remain readable."
     ],
+    taxonomyPath: ["civil-buildings", "public-buildings", "office-buildings"],
+    compatiblePresetIds: ["office-building"],
     reusablePromptPattern:
       "Interior render of a glass corridor, one-point perspective, slim mullions, terrazzo floor reflections, soft daylight, calm circulation atmosphere.",
     modelSuitability: ["Stable Diffusion", "Midjourney", "interior reference workflow"]
@@ -336,6 +362,8 @@ export const realPromptCases: RealPromptCase[] = [
       "Separate edit instructions by semantic mask.",
       "Preserve geometry, lighting direction, scale, and camera while changing materials."
     ],
+    taxonomyPath: ["civil-buildings", "public-buildings", "research-buildings"],
+    compatiblePresetIds: [],
     reusablePromptPattern:
       "Local material editing pattern: preserve composition and geometry, replace only specified semantic regions, match existing light, scale, shadow, and texture grain.",
     modelSuitability: ["inpainting", "ControlNet segmentation", "image-to-image editing"]
@@ -361,9 +389,38 @@ export const realPromptCases: RealPromptCase[] = [
       "Constrain the edit to one local design issue.",
       "Match resolution, shadows, and material aging to the surrounding image."
     ],
+    taxonomyPath: ["civil-buildings", "public-buildings", "research-buildings"],
+    compatiblePresetIds: [],
     reusablePromptPattern:
       "Close-up local edit pattern: refine only the selected architectural detail, preserve surrounding geometry and lighting, improve material fidelity and edge continuity.",
     modelSuitability: ["inpainting", "high-resolution fix", "detail pass workflow"]
+  },
+  {
+    id: "real-15",
+    title: "Contemporary Library Quiet Daylight",
+    sourceCategory: "public knowledge interior",
+    buildingType: "library",
+    sceneType: "interior",
+    viewControl: "Eye-level one-point perspective through reading areas, stacks, and public circulation.",
+    materialSystem: ["wood ceiling", "bookshelf walls", "translucent glass", "stone floor"],
+    atmosphere: ["quiet daylight", "reading calm", "warm interior glow", "restrained civic atmosphere"],
+    cameraComposition: ["eye-level", "one-point perspective", "human scale"],
+    entourage: ["readers", "small study groups", "clear circulation", "library furniture"],
+    negativePromptRules: [
+      "avoid cluttered books",
+      "avoid harsh glare",
+      "avoid warped shelving grids",
+      "avoid overcrowded reading tables"
+    ],
+    optimizationStrategy: [
+      "Keep public knowledge space calm and legible.",
+      "Use bookshelves, reading tables, and circulation lines as spatial cues."
+    ],
+    taxonomyPath: ["civil-buildings", "public-buildings", "cultural-entertainment"],
+    compatiblePresetIds: ["library"],
+    reusablePromptPattern:
+      "Calm contemporary library render with readable circulation, warm interior glow, bookshelf walls, soft daylight, human-scale reading spaces, and restrained civic atmosphere.",
+    modelSuitability: ["Midjourney", "Stable Diffusion", "interior reference workflow"]
   }
 ];
 
@@ -418,7 +475,10 @@ function realPromptCaseToLearningCase(realCase: RealPromptCase): LearningCase {
     entourage: realCase.entourage.join(", "),
     optimizationStrategy: realCase.optimizationStrategy.join(" "),
     reusablePromptPattern: realCase.reusablePromptPattern,
-    modelSuitability: realCase.modelSuitability
+    modelSuitability: realCase.modelSuitability,
+    taxonomyPath: realCase.taxonomyPath,
+    compatibleTaxonomyPaths: realCase.compatibleTaxonomyPaths,
+    compatiblePresetIds: realCase.compatiblePresetIds
   };
 }
 
