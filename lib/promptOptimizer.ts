@@ -1,47 +1,75 @@
 import type { LearningCase, OptimizationResult, PromptSelections } from "@/types/archviz";
+import type { RenderPreset } from "@/types/renderPreset";
 
 interface OptimizationInput {
   draftPrompt: string;
   selections: PromptSelections;
   renderCase: LearningCase | null;
+  renderPreset: RenderPreset | null;
+  taxonomyLabel: string;
 }
 
 export function buildOptimizedPrompt({
   draftPrompt,
   selections,
-  renderCase
+  renderCase,
+  renderPreset,
+  taxonomyLabel
 }: OptimizationInput): OptimizationResult {
   const projectIntent = draftPrompt.trim().length
     ? draftPrompt.trim()
     : "Create a clear architectural visualization that communicates design intent and spatial hierarchy.";
-  const negativePrompt = buildNegativePrompt(selections.negativePrompts);
-  const caseTitle = renderCase?.title ?? "Custom local render case";
-  const caseStructure = renderCase?.description ?? "Local mock render case structure";
+  const presetTitle = renderPreset?.buildingCategoryLabel ?? "Custom render preset";
+  const presetAtmosphere = renderPreset?.recommendedAtmosphere.join(", ") ?? "";
+  const presetMaterials = renderPreset?.recommendedMaterials.join(", ") ?? "";
+  const presetCamera = renderPreset?.recommendedCamera.join(", ") ?? "";
+  const presetKeywords = renderPreset?.promptKeywords.join(", ") ?? "";
+  const presetNegativeRules = renderPreset?.negativePromptRules ?? [];
+  const negativePrompt = buildNegativePrompt([
+    ...selections.negativePrompts,
+    ...presetNegativeRules
+  ]);
+  const caseTitle = renderCase?.title ?? "No specific render case selected";
+  const caseStructure = renderCase?.description ?? "Use the selected building taxonomy and preset as the primary reference structure.";
   const sourceCategory = renderCase?.sourceCategory ?? "local mock case";
   const viewControl = renderCase?.viewControl ?? selections.cameraComposition;
   const styleReferences = renderCase?.styleTags.join(", ") ?? selections.visualStyle;
-  const materialReferences =
-    renderCase?.materialTags.join(", ") ??
-    [
-      selections.materialDetail.facade,
-      selections.materialDetail.ground,
-      selections.materialDetail.roof
-    ].join(", ");
-  const atmosphereReferences =
-    renderCase?.atmosphereTags.join(", ") ?? selections.materialDetail.lightingDetail;
-  const cameraReferences = renderCase?.cameraTags.join(", ") ?? selections.cameraComposition;
+  const materialReferences = [
+    renderCase?.materialTags.join(", "),
+    presetMaterials,
+    selections.materialDetail.facade,
+    selections.materialDetail.ground,
+    selections.materialDetail.roof
+  ]
+    .filter(Boolean)
+    .join(", ");
+  const atmosphereReferences = [
+    renderCase?.atmosphereTags.join(", "),
+    presetAtmosphere,
+    selections.materialDetail.lightingDetail
+  ]
+    .filter(Boolean)
+    .join(", ");
+  const cameraReferences = [
+    renderCase?.cameraTags.join(", "),
+    presetCamera,
+    selections.cameraComposition
+  ]
+    .filter(Boolean)
+    .join(", ");
 
   const finalEnglishPrompt = [
     projectIntent,
-    `${selections.projectContext.projectName}, ${selections.projectContext.buildingFunction} in ${selections.projectContext.location}, concept: ${selections.projectContext.designConcept}.`,
-    `${capitalize(selections.spatialScene.sceneType)} composition based on ${caseTitle} (${sourceCategory}): ${caseStructure}.`,
-    `View control: ${viewControl}.`,
+    `${selections.projectContext.projectName}, ${selections.projectContext.buildingFunction}, taxonomy: ${taxonomyLabel || "custom taxonomy"}.`,
+    `Render preset: ${presetTitle}; preset keywords: ${presetKeywords || "architectural clarity, spatial hierarchy, material fidelity"}.`,
+    `Selected render case reference: ${caseTitle} (${sourceCategory}); ${caseStructure}.`,
+    `Scene: ${capitalize(selections.spatialScene.sceneType)} with view control ${viewControl}.`,
     `Foreground: ${selections.spatialScene.foreground}; middle ground: ${selections.spatialScene.middleGround}; background: ${selections.spatialScene.background}.`,
-    `Facade system: ${selections.materialDetail.facade}; ground: ${selections.materialDetail.ground}; roof: ${selections.materialDetail.roof}; landscape: ${selections.materialDetail.landscape}.`,
-    `Atmosphere and lighting: ${selections.materialDetail.lightingDetail}; references: ${atmosphereReferences}.`,
-    `Camera: ${selections.cameraComposition}; camera references: ${cameraReferences}.`,
-    `Rendering style: ${selections.visualStyle}; style references: ${styleReferences}; material references: ${materialReferences}.`,
-    "Architecture prompt rules: maintain readable facade logic, disciplined spatial hierarchy, realistic material scale, clean edges, coherent entourage, and controlled exposure.",
+    `Material and facade system: facade ${selections.materialDetail.facade}; ground ${selections.materialDetail.ground}; roof ${selections.materialDetail.roof}; landscape ${selections.materialDetail.landscape}; references ${materialReferences}.`,
+    `Atmosphere and lighting: ${selections.materialDetail.lightingDetail}; references ${atmosphereReferences}.`,
+    `Camera and composition: ${selections.cameraComposition}; references ${cameraReferences}.`,
+    `Rendering style: ${selections.visualStyle}; style references ${styleReferences}.`,
+    "Architecture prompt rules: treat taxonomy and preset as recommended starting points, preserve editable user adjustments, keep geometry legible, maintain facade rhythm, use realistic material scale, and avoid decorative clutter.",
     `Negative prompt: ${negativePrompt}.`
   ].join(" ");
 
@@ -50,6 +78,8 @@ export function buildOptimizedPrompt({
     projectIntent,
     "",
     "[Architectural Subject]",
+    `Building Taxonomy: ${taxonomyLabel || "Custom taxonomy"}.`,
+    `Selected Render Preset: ${presetTitle}.`,
     `Selected Render Case: ${caseTitle}.`,
     `Source Category: ${sourceCategory}.`,
     `Case Structure: ${caseStructure}.`,
@@ -60,6 +90,7 @@ export function buildOptimizedPrompt({
     "",
     "[Scene and Spatial Composition]",
     `Scene Type: ${selections.spatialScene.sceneType}.`,
+    `Preset Scene Recommendations: ${renderPreset?.recommendedSceneTypes.join(", ") ?? "custom scene"}.`,
     `View Control: ${viewControl}.`,
     `Foreground: ${selections.spatialScene.foreground}.`,
     `Middle Ground: ${selections.spatialScene.middleGround}.`,
@@ -70,22 +101,26 @@ export function buildOptimizedPrompt({
     `Ground Material: ${selections.materialDetail.ground}.`,
     `Roof Material: ${selections.materialDetail.roof}.`,
     `Landscape Material: ${selections.materialDetail.landscape}.`,
+    `Preset Material Recommendations: ${presetMaterials || "custom materials"}.`,
     `Material References: ${materialReferences}.`,
     "",
     "[Atmosphere and Lighting]",
     `Lighting Detail: ${selections.materialDetail.lightingDetail}.`,
+    `Preset Atmosphere Recommendations: ${presetAtmosphere || "custom atmosphere"}.`,
     `Atmosphere References: ${atmosphereReferences}.`,
     "",
     "[Camera and Composition]",
     `Camera Mode: ${selections.cameraComposition}.`,
+    `Preset Camera Recommendations: ${presetCamera || "custom camera"}.`,
     `Camera References: ${cameraReferences}.`,
     "",
     "[Rendering Style]",
     `Style Direction: ${selections.visualStyle}.`,
+    `Preset Rendering Style: ${renderPreset?.recommendedRenderingStyle ?? "custom style"}.`,
     `Style References: ${styleReferences}.`,
-    `Reusable Pattern: ${renderCase?.reusablePromptPattern ?? finalEnglishPrompt}.`,
+    `Reusable Pattern: ${renderCase?.reusablePromptPattern ?? renderPreset?.designIntentHint ?? finalEnglishPrompt}.`,
     `Model Suitability: ${renderCase?.modelSuitability?.join(", ") ?? "local template optimization"}.`,
-    "Optimization Rules: keep architectural geometry legible, preserve facade rhythm, avoid decorative clutter, balance human scale with material fidelity.",
+    "Optimization Rules: taxonomy and preset guide the prompt, selected case supplies reference structure, and manual workspace edits remain authoritative.",
     "",
     "[Negative Prompt]",
     negativePrompt,
@@ -95,12 +130,11 @@ export function buildOptimizedPrompt({
   ].join("\n");
 
   const chineseExplanation = [
-    `该提示词围绕项目“${selections.projectContext.projectName}”构建，地点为“${selections.projectContext.location}”，并强调“${selections.projectContext.designConcept}”这一设计概念。`,
-    `建筑类型由所选案例“${caseTitle}”自动推导为“${selections.projectContext.buildingFunction}”，用户输入主要进入 Project Intent 部分。`,
-    `空间场景采用 ${selections.spatialScene.sceneType} 视角，明确前景/中景/背景层次，保证画面叙事清晰。`,
-    "材料、氛围、镜头和风格参考来自案例结构，并可结合当前模块选择继续调整。",
-    `视觉风格为“${selections.visualStyle}”，构图方式为“${selections.cameraComposition}”，用于强化表达目标。`,
-    "负面约束用于降低几何畸变、立面不可读和杂乱元素等常见问题。"
+    `This prompt uses the selected taxonomy (${taxonomyLabel || "custom taxonomy"}) and render preset (${presetTitle}) as recommended structure.`,
+    `The selected render case (${caseTitle}) adds reusable reference logic without copying long source prompt text.`,
+    "User Project Intent remains the lead input, while scene, material, atmosphere, camera, and style fields can still be manually adjusted.",
+    "The final prompt combines preset recommendations, selected case references, and current workspace edits into a clean ArchViz prompt.",
+    "Negative rules combine standard workspace constraints with preset-specific failure prevention."
   ].join("\n");
 
   return {
@@ -108,20 +142,22 @@ export function buildOptimizedPrompt({
     chineseExplanation,
     copyReadyFinalPrompt: finalEnglishPrompt,
     improvementChecklist: [
-      "Render case structure drives building type, scene type, and references.",
-      "User input is focused into the Project Intent section.",
-      "Scene depth is separated into foreground, middle ground, and background.",
-      "Material, atmosphere, camera, and style constraints are aligned for cleaner output."
+      "Building taxonomy and render preset are included in the prompt structure.",
+      "Selected render case remains a reference layer, not a locked template.",
+      "User Project Intent is preserved as the lead section.",
+      "Manual scene, material, atmosphere, camera, and style adjustments remain editable."
     ]
   };
 }
 
 function buildNegativePrompt(negativePrompts: string[]): string {
-  if (!negativePrompts.length) {
+  const uniquePrompts = Array.from(new Set(negativePrompts));
+
+  if (!uniquePrompts.length) {
     return "avoid distorted geometry, avoid messy people, avoid overexposed image, avoid unreadable facade, avoid random objects";
   }
 
-  return negativePrompts.join(", ");
+  return uniquePrompts.join(", ");
 }
 
 function capitalize(value: string): string {
@@ -133,4 +169,4 @@ function capitalize(value: string): string {
 }
 
 // TODO(OpenAI): Replace template assembly with OpenAI Responses API prompt optimization.
-// TODO(OpenAI): Add evaluation loop to score prompt quality and suggest iterative refinements.
+// TODO(OpenAI): Add taxonomy-aware retrieval and evaluation loops for prompt quality.

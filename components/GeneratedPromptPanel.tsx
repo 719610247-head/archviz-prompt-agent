@@ -147,7 +147,7 @@ export function GeneratedPromptPanel({
       </section>
 
       <section className="output-block">
-        <h4>Chinese Explanation</h4>
+        <h4>Optimization Explanation</h4>
         <p className="explain-output">{optimized.chineseExplanation}</p>
       </section>
 

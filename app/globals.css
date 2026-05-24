@@ -91,6 +91,11 @@ textarea {
   gap: 0.7rem;
 }
 
+.compact-panel-head {
+  margin-top: 0.2rem;
+  padding-bottom: 0.4rem;
+}
+
 .case-card {
   border: 1px solid var(--line);
   background: var(--panel-soft);
@@ -222,9 +227,42 @@ textarea:focus {
   font-size: 0.94rem;
 }
 
+.compact-card {
+  gap: 0.65rem;
+}
+
 .muted {
   color: var(--text-subtle);
   font-size: 0.84rem;
+}
+
+.taxonomy-select-grid {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.taxonomy-select-grid select {
+  min-width: 0;
+  width: 100%;
+}
+
+.preset-summary-card {
+  border: 1px dashed #c8d1df;
+  border-radius: 10px;
+  display: grid;
+  gap: 0.4rem;
+  padding: 0.65rem;
+}
+
+.preset-summary-card p {
+  color: var(--text-subtle);
+  font-size: 0.82rem;
+  line-height: 1.35;
+}
+
+.section-title-row h3,
+.section-title-row strong {
+  min-width: 0;
 }
 
 .material-grid {
