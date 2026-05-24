@@ -80,10 +80,16 @@ export interface PromptSelections {
 
 export interface LearningCase {
   id: string;
-  name: string;
+  title: string;
+  description: string;
+  buildingType: BuildingFunction;
+  sceneType: SceneType;
   originalPrompt: string;
   optimizedPrompt: string;
   styleTags: string[];
+  materialTags: string[];
+  atmosphereTags: string[];
+  cameraTags: string[];
   improvementNotes: string[];
   preset: PromptSelections;
 }

@@ -1,5 +1,4 @@
 ﻿import {
-  BUILDING_FUNCTIONS,
   CAMERA_COMPOSITIONS,
   NEGATIVE_PROMPT_OPTIONS,
   SCENE_TYPES,
@@ -53,6 +52,10 @@ export function PromptBuilder({
 
       <div className="card-like">
         <h3>1. Project Context</h3>
+        <p className="muted">
+          Building Type is derived from the selected render case:{" "}
+          <strong>{selections.projectContext.buildingFunction}</strong>
+        </p>
         <div className="builder-grid">
           <label>
             <span>Project Name</span>
@@ -102,21 +105,6 @@ export function PromptBuilder({
               }
             />
           </label>
-
-          <ModuleSelect
-            label="Building Function"
-            value={selections.projectContext.buildingFunction}
-            options={BUILDING_FUNCTIONS}
-            onChange={(value) =>
-              onSelectionsChange((previous) => ({
-                ...previous,
-                projectContext: {
-                  ...previous.projectContext,
-                  buildingFunction: value
-                }
-              }))
-            }
-          />
         </div>
       </div>
 
@@ -268,12 +256,12 @@ export function PromptBuilder({
       </div>
 
       <div className="card-like">
-        <h3>Draft Prompt</h3>
+        <h3>Project Intent / Draft Prompt</h3>
         <textarea
           rows={4}
           value={draftPrompt}
           onChange={(event) => onDraftPromptChange(event.target.value)}
-          placeholder="Describe design intent, spatial story, and use scenario..."
+          placeholder="Describe the user's project intention, design goal, spatial story, and use scenario..."
         />
       </div>
     </>

@@ -44,6 +44,20 @@ const FALLBACK_SELECTIONS: PromptSelections = {
   ]
 };
 
+function selectionsFromCase(renderCase: LearningCase): PromptSelections {
+  return {
+    ...renderCase.preset,
+    projectContext: {
+      ...renderCase.preset.projectContext,
+      buildingFunction: renderCase.buildingType
+    },
+    spatialScene: {
+      ...renderCase.preset.spatialScene,
+      sceneType: renderCase.sceneType
+    }
+  };
+}
+
 export function ArchVizPromptAgent({
   learningCases,
   styleReferences
@@ -53,7 +67,7 @@ export function ArchVizPromptAgent({
   const [selectedCaseId, setSelectedCaseId] = useState<string>(initialCase?.id ?? "");
   const [draftPrompt, setDraftPrompt] = useState<string>(initialCase?.originalPrompt ?? "");
   const [selections, setSelections] = useState<PromptSelections>(
-    initialCase?.preset ?? FALLBACK_SELECTIONS
+    initialCase ? selectionsFromCase(initialCase) : FALLBACK_SELECTIONS
   );
 
   const activeCase = useMemo(
@@ -62,14 +76,14 @@ export function ArchVizPromptAgent({
   );
 
   const optimized = useMemo(
-    () => buildOptimizedPrompt({ draftPrompt, selections }),
-    [draftPrompt, selections]
+    () => buildOptimizedPrompt({ draftPrompt, selections, renderCase: activeCase }),
+    [activeCase, draftPrompt, selections]
   );
 
   const onCaseSelect = (selected: LearningCase) => {
     setSelectedCaseId(selected.id);
     setDraftPrompt(selected.originalPrompt);
-    setSelections(selected.preset);
+    setSelections(selectionsFromCase(selected));
   };
 
   if (!learningCases.length) {

@@ -229,6 +229,21 @@ textarea:focus {
   gap: 0.55rem;
 }
 
+.derived-reference-grid {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.derived-reference-grid > div {
+  border: 1px dashed #c8d1df;
+  border-radius: 10px;
+  padding: 0.65rem;
+}
+
+.derived-reference-grid strong {
+  font-size: 0.82rem;
+}
+
 .reference-card {
   border: 1px dashed #c8d1df;
   border-radius: 10px;

@@ -16,12 +16,30 @@ ArchViz Prompt Agent MVP is a local-first Next.js application for architecture v
   - `ModuleSelect`
   - `TagList`
 - Five local mock learning cases with:
+  - title and description
+  - derived building type and scene type
   - original prompt
   - optimized prompt
   - style tags
+  - material, atmosphere, and camera reference tags
   - improvement notes
 - Local mock prompt optimization logic (`lib/promptOptimizer.ts`) that regenerates structured prompts from module selections and draft text.
 - Local mock API endpoint (`app/api/mock/chat/route.ts`) for serving case/reference payloads.
+
+## Workspace Interaction Model
+- The Render Case Library drives the active building type, scene type, and core style references. Selecting a render case automatically updates the workspace instead of asking the user to manually choose Building Type.
+- Project Intent / Draft Prompt represents the user's project intention. It mainly feeds the `Project Intent` section of the generated optimized prompt while the selected case supplies architectural structure and reference logic.
+- Scene, material, atmosphere, camera, style, output preferences, and architecture-specific optimization rules are combined into a structured prompt format:
+  - Project Intent
+  - Architectural Subject
+  - Scene and Spatial Composition
+  - Material and Facade System
+  - Atmosphere and Lighting
+  - Camera and Composition
+  - Rendering Style
+  - Negative Prompt
+  - Final English Prompt
+- Future prompt library learning can be implemented with embeddings and retrieval-augmented generation (RAG), using selected case vectors to retrieve similar precedent prompts, reference tags, and optimization notes before final prompt assembly.
 
 ## Local Development Commands
 ```bash

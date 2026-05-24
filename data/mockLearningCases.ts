@@ -3,12 +3,19 @@
 export const mockLearningCases: LearningCase[] = [
   {
     id: "case-01",
-    name: "Waterfront Art Museum Twilight",
+    title: "Waterfront Art Museum Twilight",
+    description:
+      "Cultural waterfront exterior with reflective materials, dusk lighting, and competition render clarity.",
+    buildingType: "museum",
+    sceneType: "exterior",
     originalPrompt:
       "Museum near water at sunset, people around, reflective facade, cinematic mood.",
     optimizedPrompt:
       "Exterior perspective of a contemporary art museum on a waterfront promenade, titanium-clad facade with warm interior glow, wet granite plaza and native coastal planting, dusk sky with long reflections on water, eye-level wide-angle framing, balanced pedestrian scale, realistic competition-grade render with controlled contrast and material fidelity.",
     styleTags: ["waterfront", "cultural", "cinematic", "metal facade", "competition"],
+    materialTags: ["brushed titanium panels", "wet granite pavers", "standing seam zinc roof"],
+    atmosphereTags: ["dusk", "warm interior glow", "water reflections"],
+    cameraTags: ["eye-level", "wide angle", "pedestrian scale"],
     improvementNotes: [
       "Clarified site context and circulation around the museum.",
       "Specified facade, ground, and landscape materials for sharper texture control.",
@@ -47,12 +54,19 @@ export const mockLearningCases: LearningCase[] = [
   },
   {
     id: "case-02",
-    name: "Neighborhood Community Center Plaza",
+    title: "Neighborhood Community Center Plaza",
+    description:
+      "Human-scale civic street scene focused on daily public life, timber warmth, and accessible frontage.",
+    buildingType: "community center",
+    sceneType: "street",
     originalPrompt:
       "Community center with public space and people, warm and welcoming architecture.",
     optimizedPrompt:
       "Street view of a low-rise community center opening to a civic forecourt, timber and light brick facade, permeable stone paving with canopy trees, daylight atmosphere, eye-level documentary composition capturing families and elderly users, realistic render emphasizing inclusive circulation and transparent ground-floor program.",
     styleTags: ["community", "human scale", "timber", "daylight", "documentary"],
+    materialTags: ["timber slats", "light brick", "permeable stone paving"],
+    atmosphereTags: ["neutral daylight", "welcoming civic mood", "soft canopy shadows"],
+    cameraTags: ["street view", "eye-level", "documentary composition"],
     improvementNotes: [
       "Added user groups and social activity to strengthen narrative.",
       "Refined material palette to support approachable public identity.",
@@ -90,12 +104,19 @@ export const mockLearningCases: LearningCase[] = [
   },
   {
     id: "case-03",
-    name: "Forest Edge Housing Cluster",
+    title: "Forest Edge Housing Cluster",
+    description:
+      "Aerial residential cluster study with forest-edge massing, courtyard rhythm, and soft Nordic tone.",
+    buildingType: "residential",
+    sceneType: "aerial",
     originalPrompt:
       "Residential project in nature, calm mood, modern style.",
     optimizedPrompt:
       "Aerial-oblique view of a mid-density residential cluster at forest edge, pale concrete and vertical timber facade articulation, compact courtyards with gravel paths, soft Nordic overcast daylight, axonometric-informed composition highlighting massing rhythm and shared landscape, concept render balancing calm atmosphere with construction realism.",
     styleTags: ["residential", "soft Nordic", "forest", "axonometric", "concept"],
+    materialTags: ["pale concrete", "vertical timber fins", "compacted gravel"],
+    atmosphereTags: ["soft overcast", "calm forest edge", "low-contrast shadows"],
+    cameraTags: ["aerial-oblique", "axonometric-informed", "massing rhythm"],
     improvementNotes: [
       "Translated vague mood into measurable climate and light conditions.",
       "Introduced massing logic and courtyard relationships.",
@@ -133,12 +154,19 @@ export const mockLearningCases: LearningCase[] = [
   },
   {
     id: "case-04",
-    name: "Transit-Adjacent Commercial Podium",
+    title: "Transit-Adjacent Commercial Podium",
+    description:
+      "Dense commercial street-corner view with transit energy, transparent retail, and rainy reflections.",
+    buildingType: "commercial",
+    sceneType: "exterior",
     originalPrompt:
       "Commercial building by station, dynamic and realistic image.",
     optimizedPrompt:
       "Exterior street-corner perspective of a mixed-use commercial podium near transit hub, high-transparency low-iron glass and anodized aluminum facade, basalt paving and wayfinding strips, rainy day reflections with active storefronts, symmetrical yet dynamic composition, realistic render focused on urban energy and façade depth.",
     styleTags: ["commercial", "urban", "rainy day", "glass facade", "high detail"],
+    materialTags: ["low-iron glass", "anodized aluminum", "basalt paving"],
+    atmosphereTags: ["rainy day", "active storefront glow", "urban energy"],
+    cameraTags: ["street-corner perspective", "symmetrical composition", "dynamic frontage"],
     improvementNotes: [
       "Anchored building in a specific transit context.",
       "Enhanced weather behavior for reflective surface realism.",
@@ -177,12 +205,19 @@ export const mockLearningCases: LearningCase[] = [
   },
   {
     id: "case-05",
-    name: "Cultural School Courtyard Section",
+    title: "Cultural School Courtyard Section",
+    description:
+      "Section perspective for a quiet cultural school courtyard with precise joinery and minimal material rhythm.",
+    buildingType: "school",
+    sceneType: "section perspective",
     originalPrompt:
       "School design section perspective with Japanese minimal feeling.",
     optimizedPrompt:
       "Section perspective through a cultural school courtyard, layered classroom volumes with deep eaves, off-white plaster and charred timber accents, raked gravel ground and controlled bamboo planting, Japanese minimal atmosphere, close-up framing on thresholds and material joints, diagrammatic render with clean annotation-ready composition.",
     styleTags: ["school", "section", "Japanese minimal", "courtyard", "diagrammatic"],
+    materialTags: ["off-white plaster", "charred timber accents", "raked gravel"],
+    atmosphereTags: ["Japanese minimal", "soft ambient light", "quiet courtyard"],
+    cameraTags: ["section perspective", "close-up threshold framing", "annotation-ready"],
     improvementNotes: [
       "Focused on threshold experience and child-scale detailing.",
       "Converted abstract style request into material and landscape decisions.",

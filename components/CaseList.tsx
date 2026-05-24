@@ -27,9 +27,9 @@ export function CaseList({
             className={item.id === selectedCaseId ? "case-card active" : "case-card"}
             onClick={() => onSelectCase(item)}
           >
-            <strong>{item.name}</strong>
-            <p>{item.originalPrompt}</p>
-            <TagList tags={item.styleTags} />
+            <strong>{item.title}</strong>
+            <p>{item.description}</p>
+            <TagList tags={[item.buildingType, item.sceneType, ...item.styleTags]} />
           </button>
         ))}
       </div>

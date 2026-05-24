@@ -19,9 +19,31 @@ export function StyleReferencePanel({
 
       <section className="card-like">
         <h3>Selected Case: Optimized Example</h3>
-        <p className="muted">{activeCase?.name}</p>
+        <p className="muted">{activeCase?.title}</p>
         <p>{activeCase?.optimizedPrompt}</p>
         <TagList tags={activeCase?.styleTags ?? []} />
+      </section>
+
+      <section className="card-like">
+        <h3>Derived Case References</h3>
+        <p className="muted">
+          Building Type: <strong>{activeCase?.buildingType}</strong> · Scene Type:{" "}
+          <strong>{activeCase?.sceneType}</strong>
+        </p>
+        <div className="derived-reference-grid">
+          <div>
+            <strong>Materials</strong>
+            <TagList tags={activeCase?.materialTags ?? []} subtle />
+          </div>
+          <div>
+            <strong>Atmosphere</strong>
+            <TagList tags={activeCase?.atmosphereTags ?? []} subtle />
+          </div>
+          <div>
+            <strong>Camera</strong>
+            <TagList tags={activeCase?.cameraTags ?? []} subtle />
+          </div>
+        </div>
       </section>
 
       <section className="card-like">
