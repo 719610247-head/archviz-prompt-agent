@@ -110,8 +110,36 @@ textarea {
   background: var(--accent-soft);
 }
 
+.case-card-head,
+.section-title-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.55rem;
+}
+
 .case-card strong {
   font-size: 0.95rem;
+}
+
+.case-badge {
+  flex: 0 0 auto;
+  border: 1px solid #cbd5e1;
+  border-radius: 999px;
+  color: #475569;
+  background: #f8fafc;
+  padding: 0.14rem 0.45rem;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.case-badge.real {
+  color: #28565b;
+  background: #e7f2f3;
+  border-color: #b9d6d9;
 }
 
 .case-card p {

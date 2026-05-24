@@ -18,7 +18,12 @@ export function StyleReferencePanel({
       </div>
 
       <section className="card-like">
-        <h3>Selected Case: Optimized Example</h3>
+        <div className="section-title-row">
+          <h3>{activeCase?.sourceCategory ? "Selected Case: Reusable Pattern" : "Selected Case: Optimized Example"}</h3>
+          <span className={activeCase?.sourceCategory ? "case-badge real" : "case-badge"}>
+            {activeCase?.sourceCategory ? "Real Structured Case" : "Mock Case"}
+          </span>
+        </div>
         <p className="muted">{activeCase?.title}</p>
         <p>{activeCase?.optimizedPrompt}</p>
         <TagList tags={activeCase?.styleTags ?? []} />
