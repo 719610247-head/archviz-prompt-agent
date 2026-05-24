@@ -1,131 +1,88 @@
-﻿# ArchViz Prompt Agent MVP
+# ArchViz Prompt Agent - Architecture Visualization Prompt Optimization MVP
 
 ## Project Overview
-ArchViz Prompt Agent MVP is a local-first Next.js application for architecture visualization teams to structure, optimize, and compare rendering prompts. It keeps all data and optimization behavior local for fast iteration before production AI integration.
+ArchViz Prompt Agent is a local-first Next.js + TypeScript MVP for architectural rendering prompt optimization. It turns an architecture visualization brief into a structured, reusable prompt workflow built around building taxonomy, render presets, a structured ArchViz case library, project intent refinement, and generated optimized prompts.
 
-## Current MVP Features
-- Three-panel architectural workflow interface:
-  - Left: project/render case list
-  - Center: modular prompt builder + generated optimized prompt
-  - Right: visual style and aesthetic reference panel
-- Reusable UI component architecture:
-  - `CaseList`
-  - `PromptBuilder`
-  - `GeneratedPromptPanel`
-  - `StyleReferencePanel`
-  - `ModuleSelect`
-  - `TagList`
-- Five local mock learning cases with:
-  - title and description
-  - derived building type and scene type
-  - original prompt
-  - optimized prompt
-  - style tags
-  - material, atmosphere, and camera reference tags
-  - improvement notes
-- Fourteen structured real prompt case summaries in `data/realPromptCases.ts`, covering representative ArchViz render and editing workflows without copying long source prompts verbatim.
-- Multi-level building taxonomy in `data/buildingTaxonomy.ts` for Civil, Industrial, Agricultural, and public-building subtype classification.
-- Render presets in `data/renderPresets.ts` that recommend atmosphere, materials, camera, scene types, rendering style, prompt keywords, negative rules, and design intent by building subtype.
-- Explicit taxonomy matching for render cases (`taxonomyPath` and optional `compatibleTaxonomyPaths`) to prevent unrelated case leakage across building categories.
-- Exact preset-based filtering via `compatiblePresetIds`, so sibling presets such as Museum and Library do not share unrelated cases just because they sit under the same cultural taxonomy branch.
-- Local mock prompt optimization logic (`lib/promptOptimizer.ts`) that regenerates structured prompts from module selections and draft text.
-- Local mock intent refinement logic (`lib/intentRefiner.ts`) that turns casual Chinese/English project intent text into professional ArchViz intent directives.
-- Practical generated prompt actions:
-  - copy final English prompt
-  - copy full structured prompt
-  - export the current prompt as a local `.txt` file (including taxonomy, preset, case, and final prompt content)
-  - save the latest prompts to browser `localStorage` (including taxonomy/preset context)
-- Local mock API endpoint (`app/api/mock/chat/route.ts`) for serving case/reference payloads.
+The MVP is designed for architects, visualization designers, and AI rendering workflows that need more control than a free-form prompt box. It keeps all logic local and mock-based while preparing the product architecture for future OpenAI API, embeddings, and RAG integration.
 
-## Workspace Interaction Model
-- The Render Case Library drives the active building type, scene type, and core style references. Selecting a render case automatically updates the workspace instead of asking the user to manually choose Building Type.
-- The Building Type Preset layer sits above the case library. Users select a taxonomy path, review the matching render preset, and then continue adjusting scene, material, atmosphere, camera, and style fields manually.
-- The case library layer becomes Relevant Render Cases. It filters examples by selected building taxonomy and preset compatibility.
-- Relevant Render Cases now use explicit taxonomy path matching only. If no exact match exists, the UI keeps a clean empty state and still allows preset-driven prompt generation.
-- When a specific render preset is selected, Relevant Render Cases require explicit preset compatibility. Broad taxonomy matching is reserved for general presets only.
-- Project Intent / Draft Prompt represents the user's project intention. It mainly feeds the `Project Intent` section of the generated optimized prompt while the selected case supplies architectural structure and reference logic.
-- Scene, material, atmosphere, camera, style, output preferences, and architecture-specific optimization rules are combined into a structured prompt format:
-  - Project Intent
-  - Architectural Subject
-  - Scene and Spatial Composition
-  - Material and Facade System
-  - Atmosphere and Lighting
-  - Camera and Composition
-  - Rendering Style
-  - Negative Prompt
-  - Final English Prompt
-- Future prompt library learning can be implemented with embeddings and retrieval-augmented generation (RAG), using selected case vectors to retrieve similar precedent prompts, reference tags, and optimization notes before final prompt assembly.
-- Generated prompt output supports local copy, export, and lightweight prompt history actions without calling external services.
-- Case-Based Reference explains how selected cases or presets influence building type, scene strategy, materials, atmosphere, camera choices, and final prompt composition.
+## Core Features
+- Multi-level building taxonomy for civil, public, industrial, agricultural, and subtype classification.
+- Exact render preset based case filtering through explicit preset compatibility.
+- Render preset recommendations for atmosphere, material system, camera, scene type, style, keywords, and negative prompt rules.
+- Relevant render case library driven by selected taxonomy and render preset.
+- Project Intent / Draft Prompt refinement through local mock Chinese/English keyword logic.
+- Structured optimized prompt generation with raw intent, refined intent, subject, scene, material, atmosphere, camera, style, negative prompt, and final English prompt.
+- Real structured ArchViz prompt case library using summarized metadata and reusable patterns, not long copied prompt text.
+- Case-Based Reference / Derived Aesthetic Strategy panel explaining how selected cases or presets affect prompt generation.
+- Copy final English prompt.
+- Copy full structured prompt.
+- Export prompt as `.txt`.
+- Local prompt history with browser `localStorage`.
+- Future OpenAI API / RAG integration plan.
 
-## Taxonomy, Presets, And Cases
-- Building taxonomy layer: organizes projects into Civil Buildings, Industrial Buildings, Agricultural Buildings, and deeper public-building subtypes such as education, commercial, cultural, medical, sports, transportation, and memorial.
-- Render preset layer: maps selected taxonomy paths to practical ArchViz recommendations for atmosphere, material system, camera, scene type, rendering style, keywords, negative rules, and design intent.
-- Case library layer: supplies mock and real structured cases as reference examples under the selected preset.
-- Presets are recommended starting points only. The user can still customize Project Intent, scene, materials, lighting, camera, negative prompt options, and final prompt output.
-- Future extensions can connect taxonomy paths, render presets, and prompt cases to embeddings/RAG retrieval and an OpenAI API generation pipeline.
-
-## Real Prompt Case Library
-- The real prompt library is currently local, mock-based, and structured as summarized case metadata rather than copied prompt text.
-- Each real case includes source category, building type, scene type, view control, material system, atmosphere, camera composition, entourage, negative prompt rules, optimization strategy, reusable prompt pattern, and model suitability.
-- The app adapts real structured cases into the same Render Case Library used by the mock examples, so selecting a real case can drive building type, style references, materials, atmosphere, camera guidance, and generated prompt structure.
-- A future OpenAI integration can create embeddings from these structured fields and use RAG to retrieve similar cases, prompt patterns, negative rules, and optimization strategies before generating the final prompt.
-
-## Local Development Commands
-```bash
-npm.cmd run dev
-npm.cmd run typecheck
-npm.cmd run build
-npm.cmd run start
+## Product Workflow
+```text
+Building taxonomy
+  -> Render preset
+  -> Relevant cases
+  -> Project intent refinement
+  -> Optimized prompt
+  -> Copy / Export / Save
 ```
+
+## Tech Stack
+- Next.js
+- React
+- TypeScript
+- Local mock data
+- Browser Clipboard API
+- localStorage
+- Git
 
 ## File Structure
 ```text
 app/
-  api/mock/chat/route.ts
-  globals.css
-  layout.tsx
-  page.tsx
+  Next.js app entry, global styles, and mock API route.
+
 components/
-  ArchVizPromptAgent.tsx
-  CaseList.tsx
-  GeneratedPromptPanel.tsx
-  ModuleSelect.tsx
-  PromptBuilder.tsx
-  StyleReferencePanel.tsx
-  TagList.tsx
+  Three-panel workspace UI, taxonomy/preset selector, prompt builder,
+  generated prompt panel, case library, and reference strategy panel.
+
 data/
-  buildingTaxonomy.ts
-  mockLearningCases.ts
-  renderPresets.ts
-  realPromptCases.ts
+  Local building taxonomy, render presets, mock cases, and structured real
+  ArchViz prompt case summaries.
+
 lib/
-  mockApi.ts
-  promptOptimizer.ts
+  Local prompt optimization, intent refinement, and mock data access logic.
+
 types/
-  archviz.ts
-  buildingTaxonomy.ts
-  realPromptCase.ts
-  renderPreset.ts
-README.md
-package.json
-tsconfig.json
+  Shared TypeScript interfaces for taxonomy, presets, cases, and prompt state.
 ```
 
-## Future OpenAI API Integration Plan
-1. Replace local template optimization in `lib/promptOptimizer.ts` with OpenAI Responses API-driven prompt rewriting.
-2. Add secure server-only environment key handling (`OPENAI_API_KEY`) and keep credentials out of client bundles.
-3. Introduce prompt quality evaluation loops (scoring, targeted rewrite suggestions, iterative refinements).
-4. Add production API safeguards in route handlers:
-   - request validation
-   - auth and usage limits
-   - robust error handling and retry patterns
-5. Persist prompt iteration history for learning analytics and project-level context reuse.
+## Local Development
+```bash
+npm.cmd install
+npm.cmd run typecheck
+npm.cmd run build
+npm.cmd run dev
+```
+
+## Future Roadmap
+- OpenAI API integration for production-grade prompt rewriting and semantic intent extraction.
+- Embeddings / RAG prompt case retrieval using taxonomy, preset, and case metadata.
+- Image upload and semantic segmentation workflow for material or region-based editing.
+- Model-specific prompt export for Midjourney / Stable Diffusion / GPT-4o.
+- User-owned prompt case database for project teams and studios.
+- Visual reference image library connected to case and preset strategy.
 
 ## Resume-Friendly Project Description
-Built a local-first ArchViz Prompt Agent MVP in Next.js featuring a modular three-panel UX for architectural rendering prompt optimization, reusable typed React components, and a mock optimization engine designed for seamless future OpenAI API integration.
+中文：
+这是一个面向建筑效果图生成与 AI 渲染流程的提示词优化智能体 MVP。项目将建筑功能分类、渲染预设、真实提示词案例库、用户意图提炼与结构化 Prompt 生成结合起来，形成从建筑类型选择到最终提示词导出的完整工作流。
+
+English:
+A Next.js + TypeScript MVP for architectural visualization prompt optimization, integrating building taxonomy, render presets, structured case references, intent refinement, and copy/export workflows.
 
 ## Notes
-- No external APIs are called.
-- No new dependencies are installed.
-- All current logic and data are local and mock-based.
+- No external APIs are called in the current MVP.
+- All prompt optimization, intent refinement, taxonomy matching, and case retrieval are local and mock-based.
+- The structured real case library uses summaries, tags, categories, and reusable prompt patterns rather than long copyrighted prompt text.
