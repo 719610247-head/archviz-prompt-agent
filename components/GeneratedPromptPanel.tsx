@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import type { LearningCase, OptimizationResult } from "@/types/archviz";
+import type { IntentRefinementResult } from "@/types/intentRefinement";
 
 const HISTORY_STORAGE_KEY = "archviz-prompt-history-v1";
 const COPIED_RESET_MS = 1600;
@@ -15,6 +16,7 @@ interface SavedPromptHistoryItem {
   sourceCategory: string;
   projectIntent: string;
   finalEnglishPrompt: string;
+  refinementResult?: IntentRefinementResult;
 }
 
 interface GeneratedPromptPanelProps {
@@ -23,6 +25,7 @@ interface GeneratedPromptPanelProps {
   selectedTaxonomyLabel: string;
   selectedRenderPresetLabel: string;
   projectIntent: string;
+  intentRefinement: IntentRefinementResult;
   onRestoreProjectIntent: (nextValue: string) => void;
 }
 
@@ -34,6 +37,7 @@ export function GeneratedPromptPanel({
   selectedTaxonomyLabel,
   selectedRenderPresetLabel,
   projectIntent,
+  intentRefinement,
   onRestoreProjectIntent
 }: GeneratedPromptPanelProps) {
   const [copiedAction, setCopiedAction] = useState<ActionId | null>(null);
@@ -88,6 +92,7 @@ export function GeneratedPromptPanel({
       selectedCaseTitle,
       sourceCategory,
       projectIntent: normalizedProjectIntent,
+      intentRefinement,
       optimized
     });
     const blob = new Blob([exportText], { type: "text/plain;charset=utf-8" });
@@ -110,6 +115,7 @@ export function GeneratedPromptPanel({
       selectedCaseTitle,
       sourceCategory,
       projectIntent: normalizedProjectIntent,
+      refinementResult: intentRefinement,
       finalEnglishPrompt: optimized.copyReadyFinalPrompt
     };
     const nextHistory = [nextItem, ...history].slice(0, 5);
@@ -154,6 +160,39 @@ export function GeneratedPromptPanel({
       </div>
 
       <section className="output-block">
+        <details className="refinement-details" open>
+          <summary>
+            <span>Intent Refinement</span>
+            <span className={intentRefinement.source === "ai" ? "case-badge real" : "case-badge"}>
+              {formatRefinementProvider(intentRefinement)}
+            </span>
+          </summary>
+          <div className="refinement-grid">
+            <div>
+              <strong>Refined Project Intent</strong>
+              <p>{intentRefinement.refinedIntent}</p>
+            </div>
+            <div>
+              <strong>Design Directives</strong>
+              <CompactList items={intentRefinement.designDirectives} />
+            </div>
+            <div>
+              <strong>Visual Priorities</strong>
+              <CompactList items={intentRefinement.visualPriorities} />
+            </div>
+            <div>
+              <strong>Risk Warnings</strong>
+              <CompactList items={intentRefinement.riskWarnings} />
+            </div>
+            <div className="refinement-wide">
+              <strong>Prompt Strategy</strong>
+              <p>{intentRefinement.promptStrategy}</p>
+            </div>
+          </div>
+        </details>
+      </section>
+
+      <section className="output-block">
         <h4>English Prompt</h4>
         <pre className="prompt-output">{optimized.englishPrompt}</pre>
       </section>
@@ -192,6 +231,9 @@ export function GeneratedPromptPanel({
                 <span className="history-meta">
                   {item.selectedTaxonomyLabel} / {item.selectedRenderPresetLabel}
                 </span>
+                <span className="history-meta">
+                  Refinement: {formatRefinementProvider(item.refinementResult)}
+                </span>
                 <p>{item.projectIntent}</p>
               </button>
             ))}
@@ -224,6 +266,7 @@ function buildExportText({
   selectedCaseTitle,
   sourceCategory,
   projectIntent,
+  intentRefinement,
   optimized
 }: {
   selectedTaxonomyLabel: string;
@@ -231,6 +274,7 @@ function buildExportText({
   selectedCaseTitle: string;
   sourceCategory: string;
   projectIntent: string;
+  intentRefinement: IntentRefinementResult;
   optimized: OptimizationResult;
 }): string {
   return [
@@ -242,12 +286,58 @@ function buildExportText({
     "Project Intent",
     projectIntent,
     "",
+    "Intent Refinement",
+    `Source: ${intentRefinement.source}`,
+    `Refined Project Intent: ${intentRefinement.refinedIntent}`,
+    "",
+    "Design Directives",
+    ...formatList(intentRefinement.designDirectives),
+    "",
+    "Visual Priorities",
+    ...formatList(intentRefinement.visualPriorities),
+    "",
+    "Risk Warnings",
+    ...formatList(intentRefinement.riskWarnings),
+    "",
+    "Prompt Strategy",
+    intentRefinement.promptStrategy,
+    "",
     "Full Structured Generated Prompt",
     optimized.englishPrompt,
     "",
     "Final English Prompt",
     optimized.copyReadyFinalPrompt
   ].join("\n");
+}
+
+function CompactList({ items }: { items: string[] }) {
+  if (!items.length) {
+    return <p className="muted">No specific items.</p>;
+  }
+
+  return (
+    <ul className="compact-list">
+      {items.map((item) => (
+        <li key={item}>{item}</li>
+      ))}
+    </ul>
+  );
+}
+
+function formatList(items: string[]): string[] {
+  return items.length ? items.map((item) => `- ${item}`) : ["- No specific items."];
+}
+
+function formatRefinementProvider(refinement: IntentRefinementResult | undefined): string {
+  if (!refinement || refinement.source === "local") {
+    return "Local";
+  }
+
+  if (refinement.provider === "deepseek") {
+    return "DeepSeek";
+  }
+
+  return "AI";
 }
 
 function formatHistoryTime(timestamp: string): string {

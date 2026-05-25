@@ -147,6 +147,12 @@ textarea {
   border-color: #b9d6d9;
 }
 
+.case-badge.warning {
+  color: #8a4b10;
+  background: #fff7ed;
+  border-color: #fed7aa;
+}
+
 .case-card p {
   color: var(--text-subtle);
   margin-top: 0.45rem;
@@ -382,6 +388,58 @@ textarea:focus {
   line-height: 1.38;
 }
 
+.refinement-details {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #f9fbfc;
+  padding: 0.65rem;
+}
+
+.refinement-details summary {
+  align-items: center;
+  cursor: pointer;
+  display: flex;
+  font-size: 0.84rem;
+  font-weight: 700;
+  gap: 0.55rem;
+  justify-content: space-between;
+}
+
+.refinement-grid {
+  display: grid;
+  gap: 0.55rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 0.65rem;
+}
+
+.refinement-grid > div {
+  border: 1px dashed #c8d1df;
+  border-radius: 10px;
+  padding: 0.62rem;
+}
+
+.refinement-grid strong {
+  font-size: 0.8rem;
+}
+
+.refinement-grid p,
+.compact-list {
+  color: #354153;
+  font-size: 0.78rem;
+  line-height: 1.38;
+  margin: 0.32rem 0 0;
+}
+
+.compact-list {
+  display: grid;
+  gap: 0.24rem;
+  padding-left: 1rem;
+}
+
+.refinement-wide {
+  grid-column: 1 / -1;
+}
+
 .generated-panel-head {
   display: grid;
   gap: 0.55rem;
@@ -485,7 +543,8 @@ textarea:focus {
   }
 
   .builder-grid,
-  .material-grid {
+  .material-grid,
+  .refinement-grid {
     grid-template-columns: 1fr;
   }
 }

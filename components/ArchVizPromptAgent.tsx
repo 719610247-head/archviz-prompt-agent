@@ -1,11 +1,17 @@
 ﻿"use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { LearningCase, PromptSelections, StyleReference } from "@/types/archviz";
+import type {
+  IntentRefinementRequest,
+  IntentRefinementResult,
+  IntentRefinementStatus
+} from "@/types/intentRefinement";
 import type { RenderPreset } from "@/types/renderPreset";
 import type { TaxonomyPath } from "@/types/buildingTaxonomy";
 import { buildingTaxonomy } from "@/data/buildingTaxonomy";
 import { renderPresets } from "@/data/renderPresets";
+import { buildLocalIntentRefinement } from "@/lib/intentRefiner";
 import { buildOptimizedPrompt } from "@/lib/promptOptimizer";
 import { CaseList } from "@/components/CaseList";
 import { PromptBuilder } from "@/components/PromptBuilder";
@@ -48,6 +54,8 @@ const FALLBACK_SELECTIONS: PromptSelections = {
     "avoid random objects"
   ]
 };
+
+const INITIAL_INTENT_REFINEMENT_STATUS: IntentRefinementStatus = "local-fallback";
 
 function selectionsFromCase(renderCase: LearningCase): PromptSelections {
   return {
@@ -191,6 +199,19 @@ export function ArchVizPromptAgent({
   const [selections, setSelections] = useState<PromptSelections>(
     initialCase ? selectionsFromCase(initialCase) : FALLBACK_SELECTIONS
   );
+  const [intentRefinement, setIntentRefinement] = useState<IntentRefinementResult>(() =>
+    buildLocalIntentRefinement({
+      rawIntent: initialCase?.originalPrompt ?? "",
+      visualizationTaskType:
+        initialCase?.visualizationTaskType ?? FALLBACK_SELECTIONS.visualizationTaskType,
+      buildingTaxonomy: [],
+      selectedPreset: initialPreset.buildingCategoryLabel,
+      selectedCase: initialCase?.title,
+      siteContext: initialCase?.siteContext ?? FALLBACK_SELECTIONS.projectContext.siteContext
+    })
+  );
+  const [intentRefinementStatus, setIntentRefinementStatus] =
+    useState<IntentRefinementStatus>(INITIAL_INTENT_REFINEMENT_STATUS);
 
   const activeRenderPreset = useMemo(
     () => renderPresets.find((preset) => preset.id === selectedRenderPresetId) ?? initialPreset,
@@ -214,6 +235,94 @@ export function ArchVizPromptAgent({
   );
   const visibleLearningCases = exactRelevantCases;
   const activeCase = exactRelevantCases.find((item) => item.id === selectedCaseId) ?? null;
+  const intentRefinementRequest = useMemo<IntentRefinementRequest>(
+    () => ({
+      rawIntent: draftPrompt,
+      visualizationTaskType: selections.visualizationTaskType,
+      buildingTaxonomy: taxonomyLabel ? [taxonomyLabel] : [],
+      selectedPreset: activeRenderPreset.buildingCategoryLabel,
+      selectedCase: activeCase?.title,
+      siteContext: selections.projectContext.siteContext,
+      materialIntent: [
+        selections.materialDetail.facade,
+        selections.materialDetail.ground,
+        selections.materialDetail.roof,
+        selections.materialDetail.landscape
+      ]
+        .filter(Boolean)
+        .join(", "),
+      cameraIntent: selections.cameraComposition,
+      atmosphereIntent: selections.materialDetail.lightingDetail
+    }),
+    [
+      activeCase,
+      activeRenderPreset,
+      draftPrompt,
+      selections.cameraComposition,
+      selections.materialDetail.facade,
+      selections.materialDetail.ground,
+      selections.materialDetail.landscape,
+      selections.materialDetail.lightingDetail,
+      selections.materialDetail.roof,
+      selections.projectContext.siteContext,
+      selections.visualizationTaskType,
+      taxonomyLabel
+    ]
+  );
+
+  useEffect(() => {
+    const controller = new AbortController();
+    const localFallback = buildLocalIntentRefinement(intentRefinementRequest);
+
+    setIntentRefinementStatus("refining");
+
+    const timer = window.setTimeout(async () => {
+      try {
+        const response = await fetch("/api/refine-intent", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(intentRefinementRequest),
+          signal: controller.signal
+        });
+
+        if (!response.ok) {
+          setIntentRefinement(localFallback);
+          setIntentRefinementStatus("ai-failed");
+          return;
+        }
+
+        const payload = (await response.json()) as {
+          result?: IntentRefinementResult;
+          mode?: IntentRefinementStatus;
+        };
+
+        if (!isIntentRefinementResult(payload.result)) {
+          setIntentRefinement(localFallback);
+          setIntentRefinementStatus("ai-failed");
+          return;
+        }
+
+        setIntentRefinement(payload.result);
+        setIntentRefinementStatus(
+          payload.result.source === "ai" ? "ai-active" : payload.mode ?? "local-fallback"
+        );
+      } catch {
+        if (controller.signal.aborted) {
+          return;
+        }
+
+        setIntentRefinement(localFallback);
+        setIntentRefinementStatus("ai-failed");
+      }
+    }, 550);
+
+    return () => {
+      window.clearTimeout(timer);
+      controller.abort();
+    };
+  }, [intentRefinementRequest]);
 
   const optimized = useMemo(
     () =>
@@ -222,9 +331,10 @@ export function ArchVizPromptAgent({
         selections,
         renderCase: activeCase,
         renderPreset: activeRenderPreset,
-        taxonomyLabel
+        taxonomyLabel,
+        intentRefinement
       }),
-    [activeCase, activeRenderPreset, draftPrompt, selections, taxonomyLabel]
+    [activeCase, activeRenderPreset, draftPrompt, intentRefinement, selections, taxonomyLabel]
   );
 
   const onCaseSelect = (selected: LearningCase) => {
@@ -314,6 +424,9 @@ export function ArchVizPromptAgent({
         <PromptBuilder
           selections={selections}
           draftPrompt={draftPrompt}
+          intentRefinementStatus={intentRefinementStatus}
+          intentRefinementSource={intentRefinement.source}
+          intentRefinementProvider={intentRefinement.provider}
           onSelectionsChange={(updater) => setSelections((previous) => updater(previous))}
           onDraftPromptChange={setDraftPrompt}
         />
@@ -323,6 +436,7 @@ export function ArchVizPromptAgent({
           selectedTaxonomyLabel={taxonomyLabel}
           selectedRenderPresetLabel={activeRenderPreset.buildingCategoryLabel}
           projectIntent={draftPrompt}
+          intentRefinement={intentRefinement}
           onRestoreProjectIntent={setDraftPrompt}
         />
       </section>
@@ -336,5 +450,22 @@ export function ArchVizPromptAgent({
         />
       </aside>
     </main>
+  );
+}
+
+function isIntentRefinementResult(value: unknown): value is IntentRefinementResult {
+  if (typeof value !== "object" || value === null) {
+    return false;
+  }
+
+  const result = value as Partial<IntentRefinementResult>;
+
+  return (
+    typeof result.refinedIntent === "string" &&
+    Array.isArray(result.designDirectives) &&
+    Array.isArray(result.visualPriorities) &&
+    Array.isArray(result.riskWarnings) &&
+    typeof result.promptStrategy === "string" &&
+    (result.source === "ai" || result.source === "local")
   );
 }

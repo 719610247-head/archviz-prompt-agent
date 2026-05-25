@@ -7,11 +7,15 @@
   type NegativePromptOption,
   type PromptSelections
 } from "@/types/archviz";
+import type { IntentRefinementSource, IntentRefinementStatus } from "@/types/intentRefinement";
 import { ModuleSelect } from "@/components/ModuleSelect";
 
 interface PromptBuilderProps {
   selections: PromptSelections;
   draftPrompt: string;
+  intentRefinementStatus: IntentRefinementStatus;
+  intentRefinementSource: IntentRefinementSource;
+  intentRefinementProvider?: string;
   onSelectionsChange: (updater: (previous: PromptSelections) => PromptSelections) => void;
   onDraftPromptChange: (nextValue: string) => void;
 }
@@ -19,6 +23,9 @@ interface PromptBuilderProps {
 export function PromptBuilder({
   selections,
   draftPrompt,
+  intentRefinementStatus,
+  intentRefinementSource,
+  intentRefinementProvider,
   onSelectionsChange,
   onDraftPromptChange
 }: PromptBuilderProps) {
@@ -269,7 +276,24 @@ export function PromptBuilder({
       </div>
 
       <div className="card-like">
-        <h3>Project Intent / Draft Prompt</h3>
+        <div className="section-title-row">
+          <h3>Project Intent / Draft Prompt</h3>
+          <span
+            className={
+              intentRefinementStatus === "ai-active"
+                ? "case-badge real"
+                : intentRefinementStatus === "ai-failed"
+                  ? "case-badge warning"
+                  : "case-badge"
+            }
+          >
+            {getIntentRefinementLabel(
+              intentRefinementStatus,
+              intentRefinementSource,
+              intentRefinementProvider
+            )}
+          </span>
+        </div>
         <textarea
           rows={4}
           value={draftPrompt}
@@ -279,4 +303,28 @@ export function PromptBuilder({
       </div>
     </>
   );
+}
+
+function getIntentRefinementLabel(
+  status: IntentRefinementStatus,
+  source: IntentRefinementSource,
+  provider?: string
+): string {
+  if (status === "refining") {
+    return "Refining...";
+  }
+
+  if (status === "ai-active" || source === "ai") {
+    if (provider === "deepseek") {
+      return "DeepSeek refinement active";
+    }
+
+    return "AI refinement active";
+  }
+
+  if (status === "ai-failed") {
+    return "AI refinement failed, using local fallback";
+  }
+
+  return "Local fallback mode";
 }

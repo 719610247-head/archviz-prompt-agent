@@ -1,4 +1,5 @@
 import type { LearningCase, OptimizationResult, PromptSelections } from "@/types/archviz";
+import type { IntentRefinementResult } from "@/types/intentRefinement";
 import type { RenderPreset } from "@/types/renderPreset";
 import { refineProjectIntent } from "@/lib/intentRefiner";
 
@@ -8,6 +9,7 @@ interface OptimizationInput {
   renderCase: LearningCase | null;
   renderPreset: RenderPreset | null;
   taxonomyLabel: string;
+  intentRefinement?: IntentRefinementResult | null;
 }
 
 export function buildOptimizedPrompt({
@@ -15,7 +17,8 @@ export function buildOptimizedPrompt({
   selections,
   renderCase,
   renderPreset,
-  taxonomyLabel
+  taxonomyLabel,
+  intentRefinement
 }: OptimizationInput): OptimizationResult {
   const presetTitle = renderPreset?.buildingCategoryLabel ?? "Custom visualization preset";
   const presetAtmosphere = renderPreset?.recommendedAtmosphere.join(", ") ?? "";
@@ -55,20 +58,23 @@ export function buildOptimizedPrompt({
     .filter(Boolean)
     .join(", ");
 
-  const intentRefinement = refineProjectIntent({
+  const localIntentRefinement = refineProjectIntent({
     rawIntent: draftPrompt,
     taxonomyLabel,
     renderPreset,
     renderCase
   });
+  const activeIntentRefinement = intentRefinement ?? localIntentRefinement.refinement;
   const negativePrompt = buildNegativePrompt([
     ...selections.negativePrompts,
     ...presetNegativeRules
   ]);
-  const intentDirectiveText = intentRefinement.intentDirectives.join(" ");
+  const intentDirectiveText = activeIntentRefinement.designDirectives.join(" ");
+  const visualPriorityText = activeIntentRefinement.visualPriorities.join(" ");
+  const riskWarningText = activeIntentRefinement.riskWarnings.join(" ");
 
   const finalEnglishPrompt = [
-    intentRefinement.refinedIntent,
+    activeIntentRefinement.refinedIntent,
     `${selections.projectContext.projectName}, ${selections.projectContext.buildingFunction}, taxonomy: ${taxonomyLabel || "custom taxonomy"}, site context: ${selections.projectContext.siteContext}.`,
     `Visualization task: ${selections.visualizationTaskType}; task guidance: ${visualizationTaskGuidance}.`,
     `Visualization preset: ${presetTitle}; preset keywords: ${presetKeywords || "architectural clarity, spatial hierarchy, material fidelity"}.`,
@@ -80,17 +86,23 @@ export function buildOptimizedPrompt({
     `Camera and composition: ${selections.cameraComposition}; references ${cameraReferences}.`,
     `Rendering style: ${selections.visualStyle}; style references ${styleReferences}.`,
     `Refined intent directives: ${intentDirectiveText}`,
+    `Visual priorities: ${visualPriorityText}`,
+    `Prompt strategy: ${activeIntentRefinement.promptStrategy}`,
     "Architecture visualization prompt rules: treat taxonomy and preset as recommended starting points, preserve editable user adjustments, keep geometry legible, maintain facade rhythm, use realistic material scale, and avoid decorative clutter.",
     `Negative prompt: ${negativePrompt}.`
   ].join(" ");
 
   const englishPrompt = [
     "[Raw User Intent]",
-    intentRefinement.rawIntent,
+    localIntentRefinement.rawIntent,
     "",
     "[Refined Project Intent]",
-    intentRefinement.refinedIntent,
+    activeIntentRefinement.refinedIntent,
+    `Refinement Source: ${activeIntentRefinement.source}.`,
     `Intent Directives: ${intentDirectiveText}`,
+    `Visual Priorities: ${visualPriorityText}`,
+    `Risk Warnings: ${riskWarningText}`,
+    `Prompt Strategy: ${activeIntentRefinement.promptStrategy}`,
     "",
     "[Architectural Subject]",
     `Visualization Task Type: ${selections.visualizationTaskType}.`,
@@ -114,7 +126,7 @@ export function buildOptimizedPrompt({
     `Middle Ground: ${selections.spatialScene.middleGround}.`,
     `Background: ${selections.spatialScene.background}.`,
     `Task-Specific Guidance: ${visualizationTaskGuidance}.`,
-    `Refined Intent Influence: ${intentDirectiveText}`,
+    `Refined Intent Influence: ${intentDirectiveText} ${visualPriorityText}`,
     "",
     "[Material and Facade System]",
     `Facade Material: ${selections.materialDetail.facade}.`,
@@ -124,20 +136,20 @@ export function buildOptimizedPrompt({
     `Preset Material Recommendations: ${presetMaterials || "custom materials"}.`,
     `Material References: ${materialReferences}.`,
     `Task-Specific Guidance: ${visualizationTaskGuidance}.`,
-    `Refined Intent Influence: ${intentDirectiveText}`,
+    `Refined Intent Influence: ${intentDirectiveText} ${visualPriorityText}`,
     "",
     "[Atmosphere and Lighting]",
     `Lighting Detail: ${selections.materialDetail.lightingDetail}.`,
     `Preset Atmosphere Recommendations: ${presetAtmosphere || "custom atmosphere"}.`,
     `Atmosphere References: ${atmosphereReferences}.`,
-    `Refined Intent Influence: ${intentDirectiveText}`,
+    `Refined Intent Influence: ${intentDirectiveText} ${visualPriorityText}`,
     "",
     "[Camera and Composition]",
     `Camera Mode: ${selections.cameraComposition}.`,
     `Preset Camera Recommendations: ${presetCamera || "custom camera"}.`,
     `Camera References: ${cameraReferences}.`,
     `Task-Specific Guidance: ${visualizationTaskGuidance}.`,
-    `Refined Intent Influence: ${intentDirectiveText}`,
+    `Refined Intent Influence: ${intentDirectiveText} ${visualPriorityText}`,
     "",
     "[Rendering Style]",
     `Style Direction: ${selections.visualStyle}.`,
@@ -145,6 +157,7 @@ export function buildOptimizedPrompt({
     `Style References: ${styleReferences}.`,
     `Reusable Pattern: ${renderCase?.reusablePromptPattern ?? renderPreset?.designIntentHint ?? finalEnglishPrompt}.`,
     `Model Suitability: ${renderCase?.modelSuitability?.join(", ") ?? "local template optimization"}.`,
+    `Prompt Strategy: ${activeIntentRefinement.promptStrategy}.`,
     "Optimization Rules: visualization task, taxonomy, and preset guide the prompt; selected case supplies reference structure, and manual workspace edits remain authoritative.",
     "",
     "[Negative Prompt]",
@@ -155,9 +168,9 @@ export function buildOptimizedPrompt({
   ].join("\n");
 
   const explanation = [
-    "Raw user intent is refined into a professional ArchViz intent using local mock semantic keyword matching.",
+    `Raw user intent is refined through ${activeIntentRefinement.source === "ai" ? `${formatProviderLabel(activeIntentRefinement.provider)} LLM intent refinement` : "local mock semantic keyword matching"}.`,
     `Taxonomy (${taxonomyLabel || "custom taxonomy"}), preset (${presetTitle}), and selected case (${caseTitle}) are used as context for intent refinement.`,
-    "Refined intent directives influence architectural subject framing, scene composition, material language, atmosphere, camera, rendering style, and final prompt assembly.",
+    "Refined intent directives, visual priorities, risk warnings, and prompt strategy influence architectural subject framing, scene composition, material language, atmosphere, camera, rendering style, and final prompt assembly.",
     `Visualization task guidance (${selections.visualizationTaskType}) adjusts the generated prompt for the selected output workflow.`,
     "Preset guidance remains a recommended starting point while manual workspace adjustments stay editable.",
     "Negative constraints combine default quality safeguards with preset-specific risk control."
@@ -169,7 +182,7 @@ export function buildOptimizedPrompt({
     copyReadyFinalPrompt: finalEnglishPrompt,
     improvementChecklist: [
       "Visualization task matching is explicit and case filtering is strict by selected task and preset compatibility.",
-      "Project Intent is refined locally and reused across multiple prompt sections.",
+      `Project Intent refinement source: ${activeIntentRefinement.source}.`,
       "Selected visualization case and preset both influence prompt structure without locking user edits.",
       "Final English prompt integrates refined intent directives rather than only raw intent text."
     ]
@@ -238,5 +251,17 @@ function getVisualizationTaskGuidance(taskType: PromptSelections["visualizationT
   return "maintain architectural clarity, material fidelity, and coherent visual hierarchy";
 }
 
-// TODO(OpenAI): Replace template assembly with OpenAI Responses API prompt optimization.
-// TODO(OpenAI): Add taxonomy-aware retrieval and evaluation loops for prompt quality.
+function formatProviderLabel(provider: string | undefined): string {
+  if (provider === "deepseek") {
+    return "DeepSeek";
+  }
+
+  if (provider === "openai") {
+    return "OpenAI";
+  }
+
+  return "provider-agnostic";
+}
+
+// TODO(LLM): Replace template assembly with provider-agnostic LLM prompt optimization.
+// TODO(LLM): Add taxonomy-aware retrieval and evaluation loops for prompt quality.
