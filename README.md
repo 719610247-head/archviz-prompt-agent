@@ -1,35 +1,58 @@
 # ArchViz Prompt Agent - Architecture Visualization Prompt Optimization MVP
 
 ## Project Overview
-ArchViz Prompt Agent is a local-first Next.js + TypeScript MVP for architecture visualization prompt optimization. It supports a broader visualization workflow beyond single exterior renders, including photorealistic exterior and interior views, aerial renders, masterplans, section perspectives, plans, elevations, diagrams, material editing, and local image refinement.
+ArchViz Prompt Agent is a local-first Next.js + TypeScript MVP for architecture visualization prompt optimization. It is positioned as an Architecture Visualization Prompt Agent, not only an architectural rendering prompt generator.
 
-The product model combines a multi-level building taxonomy, visualization task type, visualization presets, structured local case summaries, project intent refinement, and structured optimized prompt generation. All current logic is local and mock-based, with a product path toward OpenAI API, embeddings, and RAG retrieval.
+The MVP helps designers move from project context and visualization intent to a structured, copy-ready optimized prompt. It combines building taxonomy, visualization task types, visualization presets, structured local case summaries, local intent refinement, and prompt output actions in a clean three-panel design tool workflow.
+
+All current logic is local and mock-based. The architecture is prepared for future OpenAI API integration, embeddings, and RAG retrieval without depending on external services in the MVP.
+
+## Visualization Task Types
+The product supports multiple architecture visualization outputs:
+
+- Photorealistic Exterior Render
+- Photorealistic Interior Render
+- Aerial Render
+- Masterplan
+- Section Perspective
+- Plan
+- Elevation
+- Diagram
+- Material Editing
+- Local Image Refinement
+
+These task types guide case filtering and prompt generation. For example, a masterplan emphasizes site hierarchy and circulation, while material editing emphasizes preserving original geometry and accurate material-region control.
 
 ## Core Features
 - Multi-level building taxonomy for civil, public, industrial, agricultural, and subtype classification.
 - Visualization Task Type as a first-level workflow field for renders, planning drawings, diagrams, and image refinement.
-- Exact visualization preset based case filtering through explicit task, preset, and taxonomy compatibility.
-- Visualization preset recommendations for atmosphere, material system, camera, scene type, style, keywords, and negative prompt rules.
-- Relevant Visualization Cases driven by selected task type, selected preset, and building taxonomy.
+- Visualization Preset recommendations for atmosphere, material system, camera, scene type, style, prompt keywords, and negative prompt rules.
+- Relevant Visualization Cases filtered by Visualization Task Type, Building Taxonomy, and Visualization Preset compatibility.
 - Site Context field for spatial context such as waterfront, campus, industrial district, civic plaza, interior atrium, or coastal site.
-- Case Source metadata kept separate from project spatial context.
+- Case Source metadata for tracking whether a case comes from the local mock set or local structured prompt library.
 - Project Intent / Draft Prompt refinement through local mock Chinese/English keyword logic.
 - Structured optimized prompt generation with raw intent, refined intent, subject, scene, material, atmosphere, camera, style, negative prompt, and final English prompt.
 - Real structured ArchViz prompt case library using summarized metadata and reusable patterns, not long copied prompt text.
-- Case-Based Reference / Derived Aesthetic Strategy panel explaining how selected cases or presets affect prompt generation.
+- Case-Based Reference / Derived Aesthetic Strategy panel explaining how selected cases or presets influence prompt generation.
 - Copy final English prompt and copy full structured prompt.
 - Export prompt as `.txt`.
 - Local prompt history with browser `localStorage`.
 - Future OpenAI API / RAG integration plan.
 
+## Product Model Notes
+- `Location` has been renamed to `Site Context` because the field describes spatial and environmental context, not the data source.
+- `Local structured prompt library` is treated as `Case Source`, not as a project location.
+- Case filtering prioritizes `Visualization Task Type + Building Taxonomy + Visualization Preset`, reducing mismatches between task output, building category, and selected preset.
+- Visualization presets are recommended starting points; users can still customize scene, material, atmosphere, camera, style, and prompt intent.
+
 ## Product Workflow
 ```text
-Visualization task type
-  -> Building taxonomy
-  -> Visualization preset
-  -> Relevant visualization cases
-  -> Project intent refinement
-  -> Optimized prompt
+Visualization Task Type
+  -> Building Taxonomy
+  -> Visualization Preset
+  -> Relevant Visualization Cases
+  -> Project Intent Refinement
+  -> Optimized Prompt
   -> Copy / Export / Save
 ```
 
