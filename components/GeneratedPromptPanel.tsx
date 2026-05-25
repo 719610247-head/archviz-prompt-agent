@@ -44,7 +44,7 @@ export function GeneratedPromptPanel({
   const normalizedProjectIntent = projectIntent.trim().length
     ? projectIntent.trim()
     : "Create a clear architectural visualization that communicates design intent and spatial hierarchy.";
-  const selectedCaseTitle = activeCase?.title ?? "Custom local render case";
+  const selectedCaseTitle = activeCase?.title ?? "Custom local visualization case";
   const sourceCategory = activeCase?.sourceCategory ?? "Mock Case";
   const viewedHistoryItem = useMemo(
     () => history.find((item) => item.id === viewedHistoryId) ?? null,
@@ -190,7 +190,7 @@ export function GeneratedPromptPanel({
                 <strong>{item.selectedCaseTitle}</strong>
                 <span>{formatHistoryTime(item.timestamp)}</span>
                 <span className="history-meta">
-                  {item.selectedTaxonomyLabel} · {item.selectedRenderPresetLabel}
+                  {item.selectedTaxonomyLabel} / {item.selectedRenderPresetLabel}
                 </span>
                 <p>{item.projectIntent}</p>
               </button>
@@ -235,7 +235,7 @@ function buildExportText({
 }): string {
   return [
     `Selected Building Taxonomy: ${selectedTaxonomyLabel}`,
-    `Selected Render Preset: ${selectedRenderPresetLabel}`,
+    `Selected Visualization Preset: ${selectedRenderPresetLabel}`,
     `Selected Case Title: ${selectedCaseTitle}`,
     `Source Category: ${sourceCategory}`,
     "",

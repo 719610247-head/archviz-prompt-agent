@@ -6,8 +6,11 @@ export const mockLearningCases: LearningCase[] = [
     title: "Waterfront Art Museum Twilight",
     description:
       "Cultural waterfront exterior with reflective materials, dusk lighting, and competition render clarity.",
+    visualizationTaskType: "Photorealistic Exterior Render / 写实外部效果图",
     buildingType: "museum",
     sceneType: "exterior",
+    siteContext: "waterfront promenade",
+    caseSource: "Local mock learning case",
     originalPrompt:
       "Museum near water at sunset, people around, reflective facade, cinematic mood.",
     optimizedPrompt:
@@ -17,6 +20,8 @@ export const mockLearningCases: LearningCase[] = [
     atmosphereTags: ["dusk", "warm interior glow", "water reflections"],
     cameraTags: ["eye-level", "wide angle", "pedestrian scale"],
     taxonomyPath: ["civil-buildings", "public-buildings", "cultural-entertainment"],
+    buildingTaxonomyPath: ["civil-buildings", "public-buildings", "cultural-entertainment"],
+    renderPresetId: "museum-art-gallery",
     compatiblePresetIds: ["museum-art-gallery"],
     improvementNotes: [
       "Clarified site context and circulation around the museum.",
@@ -26,10 +31,11 @@ export const mockLearningCases: LearningCase[] = [
     preset: {
       projectContext: {
         projectName: "Harbor Light Museum",
-        location: "Qingdao Waterfront District",
+        siteContext: "waterfront promenade in Qingdao",
         designConcept: "A luminous cultural lantern connecting city promenade and sea horizon.",
         buildingFunction: "museum"
       },
+      visualizationTaskType: "Photorealistic Exterior Render / 写实外部效果图",
       spatialScene: {
         sceneType: "exterior",
         foreground: "Visitors walking on wet granite promenade with soft reflections",
@@ -59,8 +65,11 @@ export const mockLearningCases: LearningCase[] = [
     title: "Neighborhood Community Center Plaza",
     description:
       "Human-scale civic street scene focused on daily public life, timber warmth, and accessible frontage.",
+    visualizationTaskType: "Photorealistic Exterior Render / 写实外部效果图",
     buildingType: "community center",
     sceneType: "street",
+    siteContext: "neighborhood civic plaza",
+    caseSource: "Local mock learning case",
     originalPrompt:
       "Community center with public space and people, warm and welcoming architecture.",
     optimizedPrompt:
@@ -70,7 +79,9 @@ export const mockLearningCases: LearningCase[] = [
     atmosphereTags: ["neutral daylight", "welcoming civic mood", "soft canopy shadows"],
     cameraTags: ["street view", "eye-level", "documentary composition"],
     taxonomyPath: ["civil-buildings", "public-buildings", "civil-affairs-buildings"],
+    buildingTaxonomyPath: ["civil-buildings", "public-buildings", "civil-affairs-buildings"],
     compatibleTaxonomyPaths: [["civil-buildings", "public-buildings"]],
+    renderPresetId: "community-center",
     compatiblePresetIds: ["community-center"],
     improvementNotes: [
       "Added user groups and social activity to strengthen narrative.",
@@ -80,10 +91,11 @@ export const mockLearningCases: LearningCase[] = [
     preset: {
       projectContext: {
         projectName: "Lotus Block Community Hub",
-        location: "Shanghai Inner Ring Neighborhood",
+        siteContext: "Shanghai inner-ring neighborhood civic plaza",
         designConcept: "Porous civic ground floor that blends daily life, learning, and social wellness.",
         buildingFunction: "community center"
       },
+      visualizationTaskType: "Photorealistic Exterior Render / 写实外部效果图",
       spatialScene: {
         sceneType: "street",
         foreground: "Families and elderly users crossing a permeable stone plaza",
@@ -112,8 +124,11 @@ export const mockLearningCases: LearningCase[] = [
     title: "Forest Edge Housing Cluster",
     description:
       "Aerial residential cluster study with forest-edge massing, courtyard rhythm, and soft Nordic tone.",
+    visualizationTaskType: "Aerial Render / 鸟瞰效果图",
     buildingType: "residential",
     sceneType: "aerial",
+    siteContext: "forest edge",
+    caseSource: "Local mock learning case",
     originalPrompt:
       "Residential project in nature, calm mood, modern style.",
     optimizedPrompt:
@@ -123,6 +138,8 @@ export const mockLearningCases: LearningCase[] = [
     atmosphereTags: ["soft overcast", "calm forest edge", "low-contrast shadows"],
     cameraTags: ["aerial-oblique", "axonometric-informed", "massing rhythm"],
     taxonomyPath: ["civil-buildings", "residential-buildings"],
+    buildingTaxonomyPath: ["civil-buildings", "residential-buildings"],
+    renderPresetId: "residential-general",
     compatiblePresetIds: ["residential-general"],
     improvementNotes: [
       "Translated vague mood into measurable climate and light conditions.",
@@ -132,10 +149,11 @@ export const mockLearningCases: LearningCase[] = [
     preset: {
       projectContext: {
         projectName: "Pine Court Residences",
-        location: "Hangzhou Forest Fringe",
+        siteContext: "Hangzhou forest edge",
         designConcept: "Layered housing bars that preserve tree corridors and shared courtyards.",
         buildingFunction: "residential"
       },
+      visualizationTaskType: "Aerial Render / 鸟瞰效果图",
       spatialScene: {
         sceneType: "aerial",
         foreground: "Tree canopy edges framing the residential blocks",
@@ -164,8 +182,11 @@ export const mockLearningCases: LearningCase[] = [
     title: "Transit-Adjacent Commercial Podium",
     description:
       "Dense commercial street-corner view with transit energy, transparent retail, and rainy reflections.",
+    visualizationTaskType: "Photorealistic Exterior Render / 写实外部效果图",
     buildingType: "commercial",
     sceneType: "exterior",
+    siteContext: "transit-adjacent urban street corner",
+    caseSource: "Local mock learning case",
     originalPrompt:
       "Commercial building by station, dynamic and realistic image.",
     optimizedPrompt:
@@ -175,7 +196,9 @@ export const mockLearningCases: LearningCase[] = [
     atmosphereTags: ["rainy day", "active storefront glow", "urban energy"],
     cameraTags: ["street-corner perspective", "symmetrical composition", "dynamic frontage"],
     taxonomyPath: ["civil-buildings", "public-buildings", "commercial-buildings"],
+    buildingTaxonomyPath: ["civil-buildings", "public-buildings", "commercial-buildings"],
     compatibleTaxonomyPaths: [["civil-buildings", "public-buildings", "transportation-buildings"]],
+    renderPresetId: "commercial-building",
     compatiblePresetIds: ["commercial-building"],
     improvementNotes: [
       "Anchored building in a specific transit context.",
@@ -185,10 +208,11 @@ export const mockLearningCases: LearningCase[] = [
     preset: {
       projectContext: {
         projectName: "Metro Gate Exchange",
-        location: "Shenzhen Transit Core",
+        siteContext: "Shenzhen transit core street corner",
         designConcept: "A porous retail podium connecting metro flow with public streets.",
         buildingFunction: "commercial"
       },
+      visualizationTaskType: "Photorealistic Exterior Render / 写实外部效果图",
       spatialScene: {
         sceneType: "exterior",
         foreground: "Reflective wet pavement with directional wayfinding strips",
@@ -218,8 +242,11 @@ export const mockLearningCases: LearningCase[] = [
     title: "Cultural School Courtyard Section",
     description:
       "Section perspective for a quiet cultural school courtyard with precise joinery and minimal material rhythm.",
+    visualizationTaskType: "Section Perspective / 剖面透视",
     buildingType: "school",
     sceneType: "section perspective",
+    siteContext: "old city cultural courtyard",
+    caseSource: "Local mock learning case",
     originalPrompt:
       "School design section perspective with Japanese minimal feeling.",
     optimizedPrompt:
@@ -229,6 +256,8 @@ export const mockLearningCases: LearningCase[] = [
     atmosphereTags: ["Japanese minimal", "soft ambient light", "quiet courtyard"],
     cameraTags: ["section perspective", "close-up threshold framing", "annotation-ready"],
     taxonomyPath: ["civil-buildings", "public-buildings", "educational-buildings"],
+    buildingTaxonomyPath: ["civil-buildings", "public-buildings", "educational-buildings"],
+    renderPresetId: "school-campus",
     compatiblePresetIds: ["school-campus"],
     improvementNotes: [
       "Focused on threshold experience and child-scale detailing.",
@@ -238,10 +267,11 @@ export const mockLearningCases: LearningCase[] = [
     preset: {
       projectContext: {
         projectName: "Courtyard Arts School",
-        location: "Kyoto Cultural Quarter",
+        siteContext: "Kyoto old city cultural courtyard",
         designConcept: "Quiet courtyard-centered learning spaces with layered thresholds.",
         buildingFunction: "school"
       },
+      visualizationTaskType: "Section Perspective / 剖面透视",
       spatialScene: {
         sceneType: "section perspective",
         foreground: "Timber threshold details and student seating edge",

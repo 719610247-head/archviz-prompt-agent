@@ -20,10 +20,11 @@ interface ArchVizPromptAgentProps {
 const FALLBACK_SELECTIONS: PromptSelections = {
   projectContext: {
     projectName: "Demo Architecture Project",
-    location: "Shanghai, China",
+    siteContext: "urban civic district",
     designConcept: "A civic building that bridges public activity, landscape, and daylight.",
     buildingFunction: "museum"
   },
+  visualizationTaskType: "Photorealistic Exterior Render / 写实外部效果图",
   spatialScene: {
     sceneType: "exterior",
     foreground: "Pedestrians and textured paving at human scale",
@@ -51,6 +52,7 @@ const FALLBACK_SELECTIONS: PromptSelections = {
 function selectionsFromCase(renderCase: LearningCase): PromptSelections {
   return {
     ...renderCase.preset,
+    visualizationTaskType: renderCase.visualizationTaskType,
     projectContext: {
       ...renderCase.preset.projectContext,
       buildingFunction: renderCase.buildingType
@@ -68,6 +70,8 @@ function applyRenderPresetToSelections(
 ): PromptSelections {
   return {
     ...previous,
+    visualizationTaskType:
+      renderPreset.recommendedVisualizationTaskTypes[0] ?? previous.visualizationTaskType,
     projectContext: {
       ...previous.projectContext,
       buildingFunction: renderPreset.buildingType,
@@ -121,16 +125,23 @@ function pathMatches(left: TaxonomyPath, right: TaxonomyPath): boolean {
 }
 
 function getCaseTaxonomyPaths(renderCase: LearningCase): TaxonomyPath[] {
-  return [renderCase.taxonomyPath ?? [], ...(renderCase.compatibleTaxonomyPaths ?? [])].filter(
-    (path) => path.length > 0
-  );
+  return [
+    renderCase.buildingTaxonomyPath ?? [],
+    renderCase.taxonomyPath ?? [],
+    ...(renderCase.compatibleTaxonomyPaths ?? [])
+  ].filter((path) => path.length > 0);
 }
 
 function caseMatchesTaxonomyOrPreset(
   renderCase: LearningCase,
   selectedTaxonomyPath: TaxonomyPath,
-  selectedRenderPreset: RenderPreset
+  selectedRenderPreset: RenderPreset,
+  selectedVisualizationTaskType: PromptSelections["visualizationTaskType"]
 ): boolean {
+  if (renderCase.visualizationTaskType !== selectedVisualizationTaskType) {
+    return false;
+  }
+
   if (!isBroadPreset(selectedRenderPreset)) {
     return (renderCase.compatiblePresetIds ?? []).includes(selectedRenderPreset.id);
   }
@@ -181,11 +192,6 @@ export function ArchVizPromptAgent({
     initialCase ? selectionsFromCase(initialCase) : FALLBACK_SELECTIONS
   );
 
-  const activeCase = useMemo(
-    () => learningCases.find((item) => item.id === selectedCaseId) ?? null,
-    [learningCases, selectedCaseId]
-  );
-
   const activeRenderPreset = useMemo(
     () => renderPresets.find((preset) => preset.id === selectedRenderPresetId) ?? initialPreset,
     [initialPreset, selectedRenderPresetId]
@@ -197,11 +203,17 @@ export function ArchVizPromptAgent({
   const exactRelevantCases = useMemo(
     () =>
       learningCases.filter((item) =>
-        caseMatchesTaxonomyOrPreset(item, selectedTaxonomyPath, activeRenderPreset)
+        caseMatchesTaxonomyOrPreset(
+          item,
+          selectedTaxonomyPath,
+          activeRenderPreset,
+          selections.visualizationTaskType
+        )
       ),
-    [activeRenderPreset, learningCases, selectedTaxonomyPath]
+    [activeRenderPreset, learningCases, selectedTaxonomyPath, selections.visualizationTaskType]
   );
   const visibleLearningCases = exactRelevantCases;
+  const activeCase = exactRelevantCases.find((item) => item.id === selectedCaseId) ?? null;
 
   const optimized = useMemo(
     () =>
@@ -228,7 +240,12 @@ export function ArchVizPromptAgent({
     setSelections((previous) => applyRenderPresetToSelections(previous, renderPreset));
 
     const firstRelevantCase = learningCases.find((item) =>
-      caseMatchesTaxonomyOrPreset(item, taxonomyPath, renderPreset)
+      caseMatchesTaxonomyOrPreset(
+        item,
+        taxonomyPath,
+        renderPreset,
+        renderPreset.recommendedVisualizationTaskTypes[0] ?? selections.visualizationTaskType
+      )
     );
     if (firstRelevantCase) {
       setSelectedCaseId(firstRelevantCase.id);
@@ -246,7 +263,12 @@ export function ArchVizPromptAgent({
     setSelectedRenderPresetId(nextPreset.id);
     setSelections((previous) => applyRenderPresetToSelections(previous, nextPreset));
     const firstRelevantCase = learningCases.find((item) =>
-      caseMatchesTaxonomyOrPreset(item, path, nextPreset)
+      caseMatchesTaxonomyOrPreset(
+        item,
+        path,
+        nextPreset,
+        nextPreset.recommendedVisualizationTaskTypes[0] ?? selections.visualizationTaskType
+      )
     );
     setSelectedCaseId(firstRelevantCase?.id ?? "");
     setDraftPrompt(firstRelevantCase?.originalPrompt ?? nextPreset.designIntentHint);

@@ -31,18 +31,18 @@ export function StyleReferencePanel({
       <section className="card-like">
         <div className="section-title-row">
           <h3>{title}</h3>
-          <span className={hasCase ? "case-badge real" : "case-badge"}>{hasCase ? "Case" : "Preset"}</span>
+          <span className={hasCase ? "case-badge real" : "case-badge"}>
+            {hasCase ? "Case" : "Preset"}
+          </span>
         </div>
         <p className="muted">{subtitle}</p>
+        {hasCase ? <p className="muted">Case Source: {activeCase?.caseSource}</p> : null}
         <p>{hasCase ? activeCase?.optimizedPrompt : activeRenderPreset.designIntentHint}</p>
         <TagList
           tags={
             hasCase
               ? (activeCase?.styleTags ?? [])
-              : [
-                  ...activeRenderPreset.promptKeywords,
-                  activeRenderPreset.recommendedRenderingStyle
-                ]
+              : [...activeRenderPreset.promptKeywords, activeRenderPreset.recommendedRenderingStyle]
           }
         />
       </section>
@@ -50,8 +50,16 @@ export function StyleReferencePanel({
       <section className="card-like">
         <h3>Derived References</h3>
         <p className="muted">
+          Visualization Task:{" "}
+          <strong>
+            {hasCase
+              ? activeCase?.visualizationTaskType
+              : activeRenderPreset.recommendedVisualizationTaskTypes.join(", ")}
+          </strong>
+        </p>
+        <p className="muted">
           Building Type:{" "}
-          <strong>{hasCase ? activeCase?.buildingType : activeRenderPreset.buildingType}</strong> ·
+          <strong>{hasCase ? activeCase?.buildingType : activeRenderPreset.buildingType}</strong> /
           Scene Type:{" "}
           <strong>
             {hasCase
@@ -99,7 +107,9 @@ export function StyleReferencePanel({
           <div>
             <strong>Prompt Influence</strong>
             <p className="muted">
-              This reference guides architectural subject framing, scene composition, material language, atmosphere, camera direction, and rendering style in the generated prompt.
+              This reference guides architectural subject framing, visualization task behavior,
+              scene composition, material language, atmosphere, camera direction, and output style
+              in the generated prompt.
             </p>
           </div>
         </div>

@@ -2,6 +2,7 @@
   CAMERA_COMPOSITIONS,
   NEGATIVE_PROMPT_OPTIONS,
   SCENE_TYPES,
+  VISUALIZATION_TASK_TYPES,
   VISUAL_STYLES,
   type NegativePromptOption,
   type PromptSelections
@@ -53,10 +54,22 @@ export function PromptBuilder({
       <div className="card-like">
         <h3>1. Project Context</h3>
         <p className="muted">
-          Building Type is derived from the selected render case:{" "}
+          Building Type is derived from the selected visualization case or preset:{" "}
           <strong>{selections.projectContext.buildingFunction}</strong>
         </p>
         <div className="builder-grid">
+          <ModuleSelect
+            label="Visualization Task Type"
+            value={selections.visualizationTaskType}
+            options={VISUALIZATION_TASK_TYPES}
+            onChange={(value) =>
+              onSelectionsChange((previous) => ({
+                ...previous,
+                visualizationTaskType: value
+              }))
+            }
+          />
+
           <label>
             <span>Project Name</span>
             <input
@@ -74,15 +87,15 @@ export function PromptBuilder({
           </label>
 
           <label>
-            <span>Location</span>
+            <span>Site Context</span>
             <input
-              value={selections.projectContext.location}
+              value={selections.projectContext.siteContext}
               onChange={(event) =>
                 onSelectionsChange((previous) => ({
                   ...previous,
                   projectContext: {
                     ...previous.projectContext,
-                    location: event.target.value
+                    siteContext: event.target.value
                   }
                 }))
               }

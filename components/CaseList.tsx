@@ -115,7 +115,7 @@ export function CaseList({
 
           {matchingPresets.length > 1 ? (
             <label>
-              <span>Render Preset</span>
+              <span>Visualization Preset</span>
               <select
                 value={selectedRenderPreset.id}
                 onChange={(event) => onRenderPresetChange(event.target.value)}
@@ -152,12 +152,12 @@ export function CaseList({
 
       <div className="panel-head compact-panel-head">
         <p className="eyebrow">Filtered Examples</p>
-        <h2>Relevant Render Cases</h2>
+        <h2>Relevant Visualization Cases</h2>
       </div>
 
       {showFallbackCases ? (
         <p className="muted">
-          No exact render case found for {selectedRenderPreset.buildingCategoryLabel}. You can still use the selected render preset as a starting point.
+          No exact visualization case found for {selectedRenderPreset.buildingCategoryLabel}. You can still use the selected visualization preset as a starting point.
         </p>
       ) : (
         <>

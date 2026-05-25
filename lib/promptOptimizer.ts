@@ -17,13 +17,14 @@ export function buildOptimizedPrompt({
   renderPreset,
   taxonomyLabel
 }: OptimizationInput): OptimizationResult {
-  const presetTitle = renderPreset?.buildingCategoryLabel ?? "Custom render preset";
+  const presetTitle = renderPreset?.buildingCategoryLabel ?? "Custom visualization preset";
   const presetAtmosphere = renderPreset?.recommendedAtmosphere.join(", ") ?? "";
   const presetMaterials = renderPreset?.recommendedMaterials.join(", ") ?? "";
   const presetCamera = renderPreset?.recommendedCamera.join(", ") ?? "";
   const presetKeywords = renderPreset?.promptKeywords.join(", ") ?? "";
   const presetNegativeRules = renderPreset?.negativePromptRules ?? [];
-  const caseTitle = renderCase?.title ?? "No specific render case selected";
+  const visualizationTaskGuidance = getVisualizationTaskGuidance(selections.visualizationTaskType);
+  const caseTitle = renderCase?.title ?? "No specific visualization case selected";
   const caseStructure =
     renderCase?.description ??
     "Use the selected building taxonomy and preset as the primary reference structure.";
@@ -68,9 +69,10 @@ export function buildOptimizedPrompt({
 
   const finalEnglishPrompt = [
     intentRefinement.refinedIntent,
-    `${selections.projectContext.projectName}, ${selections.projectContext.buildingFunction}, taxonomy: ${taxonomyLabel || "custom taxonomy"}.`,
-    `Render preset: ${presetTitle}; preset keywords: ${presetKeywords || "architectural clarity, spatial hierarchy, material fidelity"}.`,
-    `Selected render case reference: ${caseTitle} (${sourceCategory}); ${caseStructure}.`,
+    `${selections.projectContext.projectName}, ${selections.projectContext.buildingFunction}, taxonomy: ${taxonomyLabel || "custom taxonomy"}, site context: ${selections.projectContext.siteContext}.`,
+    `Visualization task: ${selections.visualizationTaskType}; task guidance: ${visualizationTaskGuidance}.`,
+    `Visualization preset: ${presetTitle}; preset keywords: ${presetKeywords || "architectural clarity, spatial hierarchy, material fidelity"}.`,
+    `Selected visualization case reference: ${caseTitle} (${sourceCategory}); ${caseStructure}.`,
     `Scene: ${capitalize(selections.spatialScene.sceneType)} with view control ${viewControl}.`,
     `Foreground: ${selections.spatialScene.foreground}; middle ground: ${selections.spatialScene.middleGround}; background: ${selections.spatialScene.background}.`,
     `Material and facade system: facade ${selections.materialDetail.facade}; ground ${selections.materialDetail.ground}; roof ${selections.materialDetail.roof}; landscape ${selections.materialDetail.landscape}; references ${materialReferences}.`,
@@ -78,7 +80,7 @@ export function buildOptimizedPrompt({
     `Camera and composition: ${selections.cameraComposition}; references ${cameraReferences}.`,
     `Rendering style: ${selections.visualStyle}; style references ${styleReferences}.`,
     `Refined intent directives: ${intentDirectiveText}`,
-    "Architecture prompt rules: treat taxonomy and preset as recommended starting points, preserve editable user adjustments, keep geometry legible, maintain facade rhythm, use realistic material scale, and avoid decorative clutter.",
+    "Architecture visualization prompt rules: treat taxonomy and preset as recommended starting points, preserve editable user adjustments, keep geometry legible, maintain facade rhythm, use realistic material scale, and avoid decorative clutter.",
     `Negative prompt: ${negativePrompt}.`
   ].join(" ");
 
@@ -91,14 +93,17 @@ export function buildOptimizedPrompt({
     `Intent Directives: ${intentDirectiveText}`,
     "",
     "[Architectural Subject]",
+    `Visualization Task Type: ${selections.visualizationTaskType}.`,
+    `Task-Specific Guidance: ${visualizationTaskGuidance}.`,
     `Building Taxonomy: ${taxonomyLabel || "Custom taxonomy"}.`,
-    `Selected Render Preset: ${presetTitle}.`,
-    `Selected Render Case: ${caseTitle}.`,
+    `Selected Visualization Preset: ${presetTitle}.`,
+    `Selected Visualization Case: ${caseTitle}.`,
     `Source Category: ${sourceCategory}.`,
+    `Case Source: ${renderCase?.caseSource ?? "preset-based local workflow"}.`,
     `Case Structure: ${caseStructure}.`,
     `Project Name: ${selections.projectContext.projectName}.`,
     `Building Type: ${selections.projectContext.buildingFunction}.`,
-    `Location: ${selections.projectContext.location}.`,
+    `Site Context: ${selections.projectContext.siteContext}.`,
     `Design Concept: ${selections.projectContext.designConcept}.`,
     "",
     "[Scene and Spatial Composition]",
@@ -108,6 +113,7 @@ export function buildOptimizedPrompt({
     `Foreground: ${selections.spatialScene.foreground}.`,
     `Middle Ground: ${selections.spatialScene.middleGround}.`,
     `Background: ${selections.spatialScene.background}.`,
+    `Task-Specific Guidance: ${visualizationTaskGuidance}.`,
     `Refined Intent Influence: ${intentDirectiveText}`,
     "",
     "[Material and Facade System]",
@@ -117,6 +123,7 @@ export function buildOptimizedPrompt({
     `Landscape Material: ${selections.materialDetail.landscape}.`,
     `Preset Material Recommendations: ${presetMaterials || "custom materials"}.`,
     `Material References: ${materialReferences}.`,
+    `Task-Specific Guidance: ${visualizationTaskGuidance}.`,
     `Refined Intent Influence: ${intentDirectiveText}`,
     "",
     "[Atmosphere and Lighting]",
@@ -129,6 +136,7 @@ export function buildOptimizedPrompt({
     `Camera Mode: ${selections.cameraComposition}.`,
     `Preset Camera Recommendations: ${presetCamera || "custom camera"}.`,
     `Camera References: ${cameraReferences}.`,
+    `Task-Specific Guidance: ${visualizationTaskGuidance}.`,
     `Refined Intent Influence: ${intentDirectiveText}`,
     "",
     "[Rendering Style]",
@@ -137,7 +145,7 @@ export function buildOptimizedPrompt({
     `Style References: ${styleReferences}.`,
     `Reusable Pattern: ${renderCase?.reusablePromptPattern ?? renderPreset?.designIntentHint ?? finalEnglishPrompt}.`,
     `Model Suitability: ${renderCase?.modelSuitability?.join(", ") ?? "local template optimization"}.`,
-    "Optimization Rules: taxonomy and preset guide the prompt, selected case supplies reference structure, and manual workspace edits remain authoritative.",
+    "Optimization Rules: visualization task, taxonomy, and preset guide the prompt; selected case supplies reference structure, and manual workspace edits remain authoritative.",
     "",
     "[Negative Prompt]",
     negativePrompt,
@@ -147,9 +155,10 @@ export function buildOptimizedPrompt({
   ].join("\n");
 
   const explanation = [
-    `Raw user intent is refined into a professional ArchViz intent using local mock semantic keyword matching.`,
+    "Raw user intent is refined into a professional ArchViz intent using local mock semantic keyword matching.",
     `Taxonomy (${taxonomyLabel || "custom taxonomy"}), preset (${presetTitle}), and selected case (${caseTitle}) are used as context for intent refinement.`,
     "Refined intent directives influence architectural subject framing, scene composition, material language, atmosphere, camera, rendering style, and final prompt assembly.",
+    `Visualization task guidance (${selections.visualizationTaskType}) adjusts the generated prompt for the selected output workflow.`,
     "Preset guidance remains a recommended starting point while manual workspace adjustments stay editable.",
     "Negative constraints combine default quality safeguards with preset-specific risk control."
   ].join("\n");
@@ -159,9 +168,9 @@ export function buildOptimizedPrompt({
     chineseExplanation: explanation,
     copyReadyFinalPrompt: finalEnglishPrompt,
     improvementChecklist: [
-      "Taxonomy matching is explicit and case filtering is strict by taxonomy path compatibility.",
+      "Visualization task matching is explicit and case filtering is strict by selected task and preset compatibility.",
       "Project Intent is refined locally and reused across multiple prompt sections.",
-      "Selected case and preset both influence prompt structure without locking user edits.",
+      "Selected visualization case and preset both influence prompt structure without locking user edits.",
       "Final English prompt integrates refined intent directives rather than only raw intent text."
     ]
   };
@@ -183,6 +192,50 @@ function capitalize(value: string): string {
   }
 
   return value.charAt(0).toUpperCase() + value.slice(1);
+}
+
+function getVisualizationTaskGuidance(taskType: PromptSelections["visualizationTaskType"]): string {
+  if (taskType.startsWith("Masterplan")) {
+    return "emphasize plan readability, site hierarchy, landscape system, circulation, and low-saturation professional drawing clarity";
+  }
+
+  if (taskType.startsWith("Section Perspective")) {
+    return "emphasize sectional depth, cut-plane clarity, interior/exterior spatial relationships, people scale, and light penetration";
+  }
+
+  if (taskType.startsWith("Photorealistic Exterior Render")) {
+    return "emphasize facade articulation, atmosphere, camera perspective, material fidelity, and site entourage";
+  }
+
+  if (taskType.startsWith("Photorealistic Interior Render")) {
+    return "emphasize interior spatial depth, material tactility, daylight quality, furniture scale, and circulation legibility";
+  }
+
+  if (taskType.startsWith("Aerial Render")) {
+    return "emphasize roofscape, massing hierarchy, site edges, landscape structure, and readable urban context";
+  }
+
+  if (taskType.startsWith("Plan")) {
+    return "emphasize clean plan organization, room hierarchy, circulation paths, lineweight clarity, and annotation-ready composition";
+  }
+
+  if (taskType.startsWith("Elevation")) {
+    return "emphasize facade rhythm, openings, material bands, shadow depth, and orthographic elevation clarity";
+  }
+
+  if (taskType.startsWith("Diagram")) {
+    return "emphasize simplified relationships, labeled systems, circulation logic, spatial hierarchy, and restrained graphic clarity";
+  }
+
+  if (taskType.startsWith("Material Editing")) {
+    return "preserve original geometry, control semantic material regions, avoid camera changes, and prioritize material replacement accuracy";
+  }
+
+  if (taskType.startsWith("Local Image Refinement")) {
+    return "preserve surrounding image context, refine only the selected local area, match lighting and texture, and avoid global design changes";
+  }
+
+  return "maintain architectural clarity, material fidelity, and coherent visual hierarchy";
 }
 
 // TODO(OpenAI): Replace template assembly with OpenAI Responses API prompt optimization.
